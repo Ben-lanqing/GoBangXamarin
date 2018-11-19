@@ -10,7 +10,7 @@ namespace GoBangXamarin
     public class BoardLayout : AbsoluteLayout
     {
         Board board = new Board();
-        int? step = 0;
+        int step = 0;
         const int COLS = 15;         // 16
         const int ROWS = 15;         // 16
         Tile[,] tiles = new Tile[ROWS, COLS];
@@ -22,6 +22,14 @@ namespace GoBangXamarin
 
         public int CurrentStep
         {
+            set
+            {
+                if (step != value)
+                {
+                    step = value;
+                    OnPropertyChanged();
+                }
+            }
             get
             {
                 return (int)step;
@@ -37,7 +45,14 @@ namespace GoBangXamarin
         Tile lastTile;
         public Tile LastTile
         {
-
+            set
+            {
+                if (lastTile != value)
+                {
+                    lastTile = value;
+                    OnPropertyChanged();
+                }
+            }
             get
             {
                 return lastTile;
@@ -78,8 +93,9 @@ namespace GoBangXamarin
             // Clear all the tiles.
             foreach (Tile tile in tiles)
                 tile.Initialize();
-
-
+            isGameInProgress = false;
+            isGameEnded = false;
+            CurrentStep = 0;
         }
         void OnTileStatusChanged(object sender, EventArgs args)
         {
@@ -99,12 +115,12 @@ namespace GoBangXamarin
             Tile changedTile = (Tile)sender;
             int x = changedTile.Row;
             int y = changedTile.Col;
-            step = changedTile.CurrentStep + 1;
-            lastTile = changedTile;
+            CurrentStep = (int)changedTile.CurrentStep + 1;
+            LastTile = changedTile;
             Application.Current.Properties["CurrentStep"] = step;
             TileTaped?.Invoke(this, changedTile);
 
-            board = board.ChangeBoard(x, y, (int)step);
+            board = board.ChangeBoard(x, y, step);
 
             Debug.WriteLine($"CurrentStep:{step} X:{x} Y:{y} is Changed");
         }

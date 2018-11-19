@@ -25,6 +25,7 @@ namespace GoBangXamarin
         //SKBitmap bitmap;
         Dictionary<Guid, Point> btDic;
         bool isGameInProgress;
+        bool isGameStart;
         DateTime gameStartTime;
         const string timeFormat = @"%m\:ss";
 
@@ -35,57 +36,62 @@ namespace GoBangXamarin
         }
         private void Init()
         {
+            PrepareForNewGame();
             boardLayout.TileTaped += BoardLayout_TileTaped;
-            CurrentStep = 0;
+            boardLayout.GameStarted += BoardLayout_GameStarted;
             BoardList = new List<Board>();
             CurrentBoard = new Board();
             downPList = new ObservableCollection<Piece>();
-            //PieceList.ItemsSource = downPList;
             btDic = new Dictionary<Guid, Point>();
-            //for (int x = 1; x <= 15; x++)
-            //{
-            //    for (int y = 0; y < 15; y++)
-            //    {
-            //        Button button = new Button();
-            //        //button.Text = $"{x},{y}";
-            //        button.Clicked += Button_Clicked;
-            //        button.WidthRequest = 25;
-            //        button.HeightRequest = 25;
-            //        btDic.Add(button.Id, new Point(x, y));
-            //        GridTable.Children.Add(button, x, y);
-
-            //    }
-            //}
-            //for (int i = 0; i < 15; i++)
-            //{
-            //    Label labelx = new Label();
-            //    labelx.Text = (i + 1).ToString();
-            //    Label labely = new Label();
-            //    labely.Text = (i + 1).ToString();
-            //    GridTable.Children.Add(labelx, 0, i);
-            //    GridTable.Children.Add(labely, i + 1, 15);
-
-            //}
             boardLayout.GameStarted += (sender, args) =>
             {
-                isGameInProgress = true;
+                //isGameInProgress = true;
+
                 gameStartTime = DateTime.Now;
+                Device.StartTimer(TimeSpan.FromSeconds(1), UpdateTimerLabel);
 
-                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                {
-                    timeLabel.Text = (DateTime.Now - gameStartTime).ToString(timeFormat);
-                    return isGameInProgress;
-                });
+                //Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                //{
+                //    timeLabel.Text = (DateTime.Now - gameStartTime).ToString(timeFormat);
+                //    return isGameInProgress;
+                //});
             };
-
 
         }
 
+        private void BoardLayout_GameStarted(object sender, EventArgs e)
+        {
+            isGameStart = true;
+        }
+
+        bool UpdateTimerLabel()
+        {
+            if (isGameStart)
+            {
+                timeLabel.Text = (DateTime.Now - gameStartTime).ToString(timeFormat);
+                return true;
+            }
+            else
+            {
+                //return false;
+            }
+            return !isGameStart;
+        }
+
+        void PrepareForNewGame()
+        {
+            boardLayout.NewGameInitialize();
+            CurrentStep = 0;
+            Application.Current.Properties["CurrentStep"] = 0;
+            timeLabel.Text = new TimeSpan(0).ToString(timeFormat);
+            isGameInProgress = false;
+            isGameStart = false;
+        }
         private void BoardLayout_TileTaped(object sender, Tile e)
         {
             var board = sender as Board;
             if (board == null) return;
-            CurrentStep = e.CurrentStep ?? +1;
+            CurrentStep = e.CurrentStep + 1;
         }
 
         private void Button_Clicked(object sender, EventArgs e)
@@ -187,5 +193,11 @@ namespace GoBangXamarin
             double vertPadding = (height - dimension) / 2;
             contentView.Padding = new Thickness(horzPadding, vertPadding);
         }
+
+        private void NewGameButton_Clicked(object sender, EventArgs e)
+        {
+            PrepareForNewGame();
+        }
     }
 }
+

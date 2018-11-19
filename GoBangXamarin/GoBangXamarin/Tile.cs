@@ -33,8 +33,8 @@ namespace GoBangXamarin
         {
             Source = gbImageSource
         };
-        PieceButtonStatus buttonStatus = PieceButtonStatus.Empty;
-        public PieceButtonStatus ButtonStatus
+        TileStatus buttonStatus = TileStatus.Empty;
+        public TileStatus Tilestatus
         {
             set
             {
@@ -44,15 +44,15 @@ namespace GoBangXamarin
 
                     switch (buttonStatus)
                     {
-                        case PieceButtonStatus.Empty:
+                        case TileStatus.Empty:
                             TileView.Content = gbImage;
                             break;
 
-                        case PieceButtonStatus.Black:
+                        case TileStatus.Black:
                             TileView.Content = blackImage;
                             break;
 
-                        case PieceButtonStatus.White:
+                        case TileStatus.White:
                             TileView.Content = whiteImage;
 
                             break;
@@ -71,7 +71,7 @@ namespace GoBangXamarin
         }
 
         bool doNotFireEvent;
-        public int? CurrentStep = 0;
+        public int CurrentStep = 0;
 
         public event EventHandler TileStatusChanged;
         public Tile(int row = 0, int col = 0)
@@ -82,8 +82,8 @@ namespace GoBangXamarin
             TileView = new Frame
             {
                 Content = hiddenLabel,
-                BackgroundColor = Color.Black,
-                OutlineColor = Color.Black,
+                BackgroundColor = Color.Yellow,
+                BorderColor = Color.Black,
                 Padding = new Thickness(1)
             };
 
@@ -98,38 +98,40 @@ namespace GoBangXamarin
         }
         public void Initialize()
         {
-            //doNotFireEvent = true;
-            buttonStatus = PieceButtonStatus.Empty;
-            //doNotFireEvent = false;
+            doNotFireEvent = true;
+            buttonStatus = TileStatus.Empty;
+            CurrentStep = 0;
+            TileView.Content = gbImage;
+            doNotFireEvent = false;
         }
 
         void OnSingleTap(object sender, object args)
         {
-            if (buttonStatus == PieceButtonStatus.Empty)
+            if (buttonStatus == TileStatus.Empty)
             {
-                CurrentStep = Application.Current.Properties["CurrentStep"] as int?;
-                int? nextStep = CurrentStep == null ? 1 : CurrentStep + 1;
+                CurrentStep = (int)Application.Current.Properties["CurrentStep"];
+                int nextStep = CurrentStep + 1;
                 if (nextStep % 2 == 1)
                 {
-                    ButtonStatus = PieceButtonStatus.Black;
+                    Tilestatus = TileStatus.Black;
                 }
                 else
                 {
-                    ButtonStatus = PieceButtonStatus.White;
+                    Tilestatus = TileStatus.White;
                 }
             }
         }
 
 
     }
-    public enum PieceButtonStatus
+    public enum TileStatus
     {
         Empty,
         Black,
         White
     }
-    public class PieceButtonTapEventArgs : EventArgs
-    {
-        public Tile TapedTile { get; set; }
-    }
+    //public class PieceButtonTapEventArgs : EventArgs
+    //{
+    //    public Tile TapedTile { get; set; }
+    //}
 }

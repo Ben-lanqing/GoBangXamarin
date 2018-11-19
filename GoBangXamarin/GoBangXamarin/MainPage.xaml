@@ -16,17 +16,20 @@
             </Grid.ColumnDefinitions>
             <StackLayout x:Name="textStack" Grid.Row="0" Grid.Column="1" Spacing="0">
                 <StackLayout HorizontalOptions="Center" Spacing="0">
-                    <Label Text="BugSweeper" Font="Bold, Large" TextColor="Accent" />
+                    <Label Text="GoBang" Font="Bold, Large" TextColor="Accent" />
                     <BoxView Color="Accent" HeightRequest="3" />
                 </StackLayout>
-                <Label Text="Tap to flag/unflag a potential bug." VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />
-                <Label Text="Double-tap if you're sure it's not a bug.&#xA;The first double-tap is always safe!" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />
+                <!--<Label Text="Tap to flag/unflag a potential bug." VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />-->
+                <Label Text="TestGoBang!Go!Go!Go!" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />
                 <StackLayout Orientation="Horizontal" Spacing="0" VerticalOptions="CenterAndExpand" HorizontalOptions="Center">
                     <Label BindingContext="{x:Reference boardLayout}" Text="{Binding LastTile.ButtonStatus, StringFormat='ButtonStatus: {0}  '}" />
                     <Label BindingContext="{x:Reference boardLayout}" Text="{Binding CurrentStep, StringFormat=' CurrentStep: {0} '}" />
                 </StackLayout>
                 <!-- Make this a binding??? -->
                 <Label x:Name="timeLabel" Text="0:00" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />
+                <Button x:Name="NewGameButton" Text=" New Game " HorizontalOptions="Center" VerticalOptions="Center" Clicked="NewGameButton_Clicked"
+                            BorderColor="Black" BorderWidth="2" BackgroundColor="White" TextColor="Black" />
+
             </StackLayout>
             <ContentView Grid.Row="1" Grid.Column="1" SizeChanged="OnBoardContentViewSizeChanged">
                 <!-- Single-cell Grid for Board and overlays. -->
