@@ -21,6 +21,7 @@ namespace GoBangXamarin
         static ImageSource blackImageSource = ImageSource.FromResource("GoBangXamarin.Image.black.png");
         static ImageSource whiteImageSource = ImageSource.FromResource("GoBangXamarin.Image.white.png");
         static ImageSource gbImageSource = ImageSource.FromResource("GoBangXamarin.Image.gb.png");
+        static ImageSource emptyImageSource = ImageSource.FromResource("GoBangXamarin.Image.empty.png");
         Image blackImage = new Image
         {
             Source = blackImageSource
@@ -32,6 +33,10 @@ namespace GoBangXamarin
         Image gbImage = new Image
         {
             Source = gbImageSource
+        };
+        Image emptyImage = new Image
+        {
+            Source = emptyImageSource
         };
         TileStatus buttonStatus = TileStatus.Empty;
         public TileStatus Tilestatus
@@ -45,7 +50,7 @@ namespace GoBangXamarin
                     switch (buttonStatus)
                     {
                         case TileStatus.Empty:
-                            TileView.Content = gbImage;
+                            TileView.Content = emptyImage;
                             break;
 
                         case TileStatus.Black:
@@ -81,9 +86,9 @@ namespace GoBangXamarin
 
             TileView = new Frame
             {
-                Content = hiddenLabel,
-                BackgroundColor = Color.Yellow,
-                BorderColor = Color.Black,
+                //Content = hiddenLabel,
+                //BackgroundColor = Color.Yellow,
+                //BorderColor = Color.Black,
                 Padding = new Thickness(1)
             };
 
@@ -101,7 +106,7 @@ namespace GoBangXamarin
             doNotFireEvent = true;
             buttonStatus = TileStatus.Empty;
             CurrentStep = 0;
-            TileView.Content = gbImage;
+            TileView.Content = emptyImage;
             doNotFireEvent = false;
         }
 

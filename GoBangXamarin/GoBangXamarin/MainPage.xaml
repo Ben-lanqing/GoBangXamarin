@@ -7,8 +7,8 @@
     <ContentView SizeChanged="OnMainContentViewSizeChanged">
         <Grid x:Name="mainGrid" ColumnSpacing="0" RowSpacing="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="7*" />
                 <RowDefinition Height="4*" />
+                <RowDefinition Height="6*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0" />
@@ -19,16 +19,21 @@
                     <Label Text="GoBang" Font="Bold, Large" TextColor="Accent" />
                     <BoxView Color="Accent" HeightRequest="3" />
                 </StackLayout>
-                <!--<Label Text="Tap to flag/unflag a potential bug." VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />-->
-                <Label Text="TestGoBang!Go!Go!Go!" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />
                 <StackLayout Orientation="Horizontal" Spacing="0" VerticalOptions="CenterAndExpand" HorizontalOptions="Center">
-                    <Label BindingContext="{x:Reference boardLayout}" Text="{Binding LastTile.ButtonStatus, StringFormat='ButtonStatus: {0}  '}" />
+                    <Label BindingContext="{x:Reference boardLayout}" Text="{Binding LastTile.Col, StringFormat='Last: {0},'}" />
+                    <Label BindingContext="{x:Reference boardLayout}" Text="{Binding LastTile.Row, StringFormat=' {0}  '}" />
+                    <Label BindingContext="{x:Reference boardLayout}" Text="{Binding LastTile.Tilestatus, StringFormat=' {0}  '}" />
                     <Label BindingContext="{x:Reference boardLayout}" Text="{Binding CurrentStep, StringFormat=' CurrentStep: {0} '}" />
                 </StackLayout>
-                <!-- Make this a binding??? -->
                 <Label x:Name="timeLabel" Text="0:00" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />
-                <Button x:Name="NewGameButton" Text=" New Game " HorizontalOptions="Center" VerticalOptions="Center" Clicked="NewGameButton_Clicked"
+                <StackLayout HorizontalOptions="Center" Spacing="0">
+                    <Button x:Name="NewGameButton" Text=" New Game " HorizontalOptions="Center" VerticalOptions="Center" Clicked="NewGameButton_Clicked"
                             BorderColor="Black" BorderWidth="2" BackgroundColor="White" TextColor="Black" />
+                    <Button x:Name="NextButton" Text=" Next Game " HorizontalOptions="Center" VerticalOptions="Center" Clicked="NextButton_Clicked"
+                            BorderColor="Black" BorderWidth="2" BackgroundColor="White" TextColor="Black" />
+                </StackLayout>
+                <Label x:Name="msgLb" Text=" " VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />
+
 
             </StackLayout>
             <ContentView Grid.Row="1" Grid.Column="1" SizeChanged="OnBoardContentViewSizeChanged">

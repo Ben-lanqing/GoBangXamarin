@@ -27,6 +27,7 @@
     <None Remove="Image\black.png" />
     <None Remove="Image\board.jpg" />
     <None Remove="Image\delete.png" />
+    <None Remove="Image\empty.png" />
     <None Remove="Image\gb.png" />
     <None Remove="Image\LEVImage\lev1.jpg" />
     <None Remove="Image\LEVImage\lev10.jpg" />
@@ -241,6 +242,7 @@
     <EmbeddedResource Include="Image\black.png" />
     <EmbeddedResource Include="Image\board.jpg" />
     <EmbeddedResource Include="Image\delete.png" />
+    <EmbeddedResource Include="Image\empty.png" />
     <EmbeddedResource Include="Image\gb.png" />
     <EmbeddedResource Include="Image\LEVImage\lev1.jpg" />
     <EmbeddedResource Include="Image\LEVImage\lev10.jpg" />

@@ -86,12 +86,19 @@ namespace GoBangXamarin
             timeLabel.Text = new TimeSpan(0).ToString(timeFormat);
             isGameInProgress = false;
             isGameStart = false;
+            msgLb.Text = "";
+
         }
         private void BoardLayout_TileTaped(object sender, Tile e)
         {
-            var board = sender as Board;
-            if (board == null) return;
-            CurrentStep = e.CurrentStep + 1;
+            var boardLayout = sender as BoardLayout;
+            if (boardLayout == null) return;
+            CurrentBoard = boardLayout.CurrentBoard;
+            if (!BoardList.Exists(a => a.Step == CurrentBoard.Step))
+            {
+                CurrentStep = e.CurrentStep;
+                BoardList.Add(CurrentBoard);
+            }
         }
 
         private void Button_Clicked(object sender, EventArgs e)
@@ -141,7 +148,7 @@ namespace GoBangXamarin
             PieceInfo pieceInfo = hepler.AIGetNext(CurrentBoard);
             string str = $"NextPiece:  x:{pieceInfo.X} y:{pieceInfo.Y} ";
 
-            //msg.Text = str;
+            msgLb.Text = str;
         }
 
         private void UpdateCurrent()
@@ -198,6 +205,8 @@ namespace GoBangXamarin
         {
             PrepareForNewGame();
         }
+
+
     }
 }
 
