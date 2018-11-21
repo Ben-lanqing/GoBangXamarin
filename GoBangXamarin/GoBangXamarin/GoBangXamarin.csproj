@@ -242,7 +242,9 @@
     <EmbeddedResource Include="Image\black.png" />
     <EmbeddedResource Include="Image\board.jpg" />
     <EmbeddedResource Include="Image\delete.png" />
-    <EmbeddedResource Include="Image\empty.png" />
+    <EmbeddedResource Include="Image\empty.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Image\gb.png" />
     <EmbeddedResource Include="Image\LEVImage\lev1.jpg" />
     <EmbeddedResource Include="Image\LEVImage\lev10.jpg" />

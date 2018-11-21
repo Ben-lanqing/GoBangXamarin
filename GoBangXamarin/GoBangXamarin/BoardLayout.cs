@@ -73,6 +73,7 @@ namespace GoBangXamarin
                     Tile tile = new Tile(row, col);
                     tile.TileStatusChanged += OnTileStatusChanged;
                     Children.Add(tile.TileView);
+                    //Children.Add(tile.TileImage);
                     tiles[row, col] = tile;
                 }
 
@@ -89,11 +90,12 @@ namespace GoBangXamarin
 
                 foreach (Tile tile in tiles)
                 {
-                    double x = tile.Col * tileWidth + (LBorderWidth - TileWidth / 2) * rate;
-                    double y = tile.Row * tileHeight + (BorderWidth - TileWidth / 2) * rate;
+                    double x = tile.X * tileWidth + (LBorderWidth - TileWidth / 2) * rate;
+                    double y = tile.Y * tileHeight + (BorderWidth - TileWidth / 2) * rate;
 
                     Rectangle bounds = new Rectangle(x, y, tileWidth, tileHeight);
                     SetLayoutBounds(tile.TileView, bounds);
+                    //SetLayoutBounds(tile.TileImage, bounds);
                 }
             };
 
@@ -122,7 +124,7 @@ namespace GoBangXamarin
             LastTile = changedTile;
             CurrentStep = (int)Application.Current.Properties["CurrentStep"] + 1;
             Application.Current.Properties["CurrentStep"] = CurrentStep;
-            CurrentBoard = CurrentBoard.ChangeBoard(changedTile.Row, changedTile.Col, CurrentStep);
+            CurrentBoard = CurrentBoard.ChangeBoard(changedTile.X, changedTile.Y, CurrentStep);
             TileTaped?.Invoke(this, changedTile);
         }
 

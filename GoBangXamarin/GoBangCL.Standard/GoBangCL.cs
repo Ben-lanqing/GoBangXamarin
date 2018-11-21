@@ -205,28 +205,32 @@ namespace GoBangCL.Standard
                 // line 0
                 for (int x = mini; x < maxi; x++)
                 {
-                    if (x < 1 || x > 15 || x == i)
+                    if (x < 0 || x > 14 || x == i)
+                        continue;
+                    if (j < 0 || j > 14 )
                         continue;
                     PieceInfo info = board.GetPieceInfo(x, j);
                     Boolean isd = IsDefendCrossPoint(info, player, 0);
 
                     if (isd)
                     {
-                        NewLTCrossPoint.Add(info);
+                        NewLTCrossPoint.Add(d);
                     }
                 }
 
                 // line 1
                 for (int y = minj; y < maxj; y++)
                 {
-                    if (y < 1 || y > 15 || y == j)
+                    if (y < 0 || y > 14 || y == j)
+                        continue;
+                    if (i < 0 || i > 14 )
                         continue;
                     PieceInfo info = board.GetPieceInfo(i, y);
                     Boolean isd = IsDefendCrossPoint(info, player, 1);
 
                     if (isd)
                     {
-                        NewLTCrossPoint.Add(info);
+                        NewLTCrossPoint.Add(d);
                     }
                 }
 
@@ -234,12 +238,12 @@ namespace GoBangCL.Standard
                 int ly = minj;
                 for (int x = mini; x < maxi; x++)
                 {
-                    if (x < 1 || x > 15 || x == i)
+                    if (x < 0 || x > 14 || x == i)
                     {
                         ly++;
                         continue;
                     }
-                    if (ly < 1 || ly > 15 || ly == j)
+                    if (ly < 0 || ly > 14 || ly == j)
                     {
                         ly++;
                         continue;
@@ -249,7 +253,7 @@ namespace GoBangCL.Standard
 
                     if (isd)
                     {
-                        NewLTCrossPoint.Add(info);
+                        NewLTCrossPoint.Add(d);
                     }
                 }
                 ly++;
@@ -258,12 +262,12 @@ namespace GoBangCL.Standard
                 int rx = maxi;
                 for (int y = minj; y < maxj; y++)
                 {
-                    if (y < 1 || y > 15 || y == j)
+                    if (y < 0 || y > 14 || y == j)
                     {
                         rx--;
                         continue;
                     }
-                    if (rx < 1 || rx > 15 || rx == i)
+                    if (rx < 0 || rx > 14 || rx == i)
                     {
                         rx--;
                         continue;
@@ -273,7 +277,7 @@ namespace GoBangCL.Standard
 
                     if (isd)
                     {
-                        NewLTCrossPoint.Add(info);
+                        NewLTCrossPoint.Add(d);
                     }
                 }
                 rx--;

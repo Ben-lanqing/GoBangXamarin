@@ -98,57 +98,57 @@ namespace GoBangXamarin
             {
                 CurrentStep = e.CurrentStep;
                 BoardList.Add(CurrentBoard);
+                if (CurrentStep >= 3)
+                {
+                    GetNextStep();
+                }
             }
         }
 
-        private void Button_Clicked(object sender, EventArgs e)
-        {
-            var button = sender as Button;
-            var p = btDic[button.Id];
-            int x = (int)p.X;
-            int y = (int)p.Y;
+        //private void Button_Clicked(object sender, EventArgs e)
+        //{
+        //    var button = sender as Button;
+        //    var p = btDic[button.Id];
+        //    int x = (int)p.X;
+        //    int y = (int)p.Y;
 
-            bool down = DownPiece(x - 1, y);
-            if (down)
-            {
-                button.BackgroundColor = CurrentStep % 2 == 1 ? Color.Black : Color.White;
-            }
-            else
-            {
-                //msg.Text = $"{x},{y} Not Empty";
-            }
-        }
+        //    bool down = DownPiece(x - 1, y);
+        //    if (down)
+        //    {
+        //        button.BackgroundColor = CurrentStep % 2 == 1 ? Color.Black : Color.White;
+        //    }
+        //    else
+        //    {
+        //        //msg.Text = $"{x},{y} Not Empty";
+        //    }
+        //}
         //private void DownButton_Clicked(object sender, EventArgs e)
         //{
         //    int x = Convert.ToInt32(PX.Text);
         //    int y = Convert.ToInt32(PY.Text);
         //    DownPiece(x, y);
         //}
-        private bool DownPiece(int x, int y)
-        {
-            if (CurrentBoard.DownPieces.Exists(a => a.X == x && a.Y == y)) return false;
-            CurrentStep++;
-            var newBoard = CurrentBoard.ChangeBoard(x, y, CurrentStep);
-            CurrentBoard = newBoard;
-            BoardList.Add(newBoard);
-            downPList.Clear();
-            foreach (var p in newBoard.DownPieces)
-            {
-                downPList.Add(p);
-            }
-            string str = $"DownButton:x:{x} y:{y} Step:{CurrentStep}";
-            //msg.Text = str;
-            UpdateCurrent();
+        //private bool DownPiece(int x, int y)
+        //{
+        //    if (CurrentBoard.DownPieces.Exists(a => a.X == x && a.Y == y)) return false;
+        //    CurrentStep++;
+        //    var newBoard = CurrentBoard.ChangeBoard(x, y, CurrentStep);
+        //    CurrentBoard = newBoard;
+        //    BoardList.Add(newBoard);
+        //    downPList.Clear();
+        //    foreach (var p in newBoard.DownPieces)
+        //    {
+        //        downPList.Add(p);
+        //    }
+        //    string str = $"DownButton:x:{x} y:{y} Step:{CurrentStep}";
+        //    //msg.Text = str;
+        //    UpdateCurrent();
 
-            return true;
-        }
+        //    return true;
+        //}
         private void NextButton_Clicked(object sender, EventArgs e)
         {
-            hepler = new GoBangHepler(CurrentBoard);
-            PieceInfo pieceInfo = hepler.AIGetNext(CurrentBoard);
-            string str = $"NextPiece:  x:{pieceInfo.X} y:{pieceInfo.Y} ";
-
-            msgLb.Text = str;
+            GetNextStep();
         }
 
         private void UpdateCurrent()
@@ -206,7 +206,21 @@ namespace GoBangXamarin
             PrepareForNewGame();
         }
 
+        private void GetNextStep()
+        {
+            try
+            {
+                hepler = new GoBangHepler(CurrentBoard);
+                PieceInfo pieceInfo = hepler.AIGetNext(CurrentBoard);
+                string str = $"NextPiece:  x:{pieceInfo.X + 1} y:{pieceInfo.Y + 1} ";
 
+                msgLb.Text = str;
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
     }
 }
 

@@ -7,8 +7,8 @@
     <ContentView SizeChanged="OnMainContentViewSizeChanged">
         <Grid x:Name="mainGrid" ColumnSpacing="0" RowSpacing="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="4*" />
-                <RowDefinition Height="6*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="8*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0" />
@@ -29,7 +29,7 @@
                 <StackLayout HorizontalOptions="Center" Spacing="0">
                     <Button x:Name="NewGameButton" Text=" New Game " HorizontalOptions="Center" VerticalOptions="Center" Clicked="NewGameButton_Clicked"
                             BorderColor="Black" BorderWidth="2" BackgroundColor="White" TextColor="Black" />
-                    <Button x:Name="NextButton" Text=" Next Game " HorizontalOptions="Center" VerticalOptions="Center" Clicked="NextButton_Clicked"
+                    <Button x:Name="NextButton" Text=" Next Step " HorizontalOptions="Center" VerticalOptions="Center" Clicked="NextButton_Clicked"
                             BorderColor="Black" BorderWidth="2" BackgroundColor="White" TextColor="Black" />
                 </StackLayout>
                 <Label x:Name="msgLb" Text=" " VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />
@@ -48,36 +48,6 @@
 
                     <local:BoardLayout x:Name="boardLayout" />
 
-                    <!--<StackLayout x:Name="congratulationsText" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
-                <Label Text="C" TextColor="Red" />
-                <Label Text="O" TextColor="Red" />
-                <Label Text="N" TextColor="Red" />
-                <Label Text="G" TextColor="Red" />
-                <Label Text="R" TextColor="Red" />
-                <Label Text="A" TextColor="Red" />
-                <Label Text="T" TextColor="Red" />
-                <Label Text="U" TextColor="Red" />
-                <Label Text="L" TextColor="Red" />
-                <Label Text="A" TextColor="Red" />
-                <Label Text="T" TextColor="Red" />
-                <Label Text="I" TextColor="Red" />
-                <Label Text="O" TextColor="Red" />
-                <Label Text="N" TextColor="Red" />
-                <Label Text="S" TextColor="Red" />
-                <Label Text="!" TextColor="Red" />
-            </StackLayout>
-            <StackLayout x:Name="consolationText" Orientation="Horizontal" Spacing="0" HorizontalOptions="Center" VerticalOptions="Center">
-                <Label Text="T" TextColor="Red" />
-                <Label Text="O" TextColor="Red" />
-                <Label Text="O" TextColor="Red" />
-                <Label Text=" " TextColor="Red" />
-                <Label Text="B" TextColor="Red" />
-                <Label Text="A" TextColor="Red" />
-                <Label Text="D" TextColor="Red" />
-                <Label Text="!" TextColor="Red" />
-            </StackLayout>
-            <Button x:Name="playAgainButton" Text=" Play Another Game? " HorizontalOptions="Center" VerticalOptions="Center" Clicked="OnPlayAgainButtonClicked"
-                            BorderColor="Black" BorderWidth="2" BackgroundColor="White" TextColor="Black" />-->
                 </Grid>
             </ContentView>
         </Grid>

@@ -66,60 +66,66 @@ namespace GoBangCL.Standard.Model
         public ColourEnum[] GetLinePieces(int x, int y, int direction)
         {
             ColourEnum[] line = new ColourEnum[9];
-            int index = 0; ColourEnum colour = ColourEnum.Empty;
-            for (int i = -4; i <= 4; i++)
+            try
             {
-                index = 4 + i;
-                if (i == 0) continue;
-                if (direction == 0)
+                int index = 0; ColourEnum colour = ColourEnum.Empty;
+                for (int i = -4; i <= 4; i++)
                 {
-                    if (x + i >= 0 && x + i < 15) // -向
+                    index = 4 + i;
+                    if (i == 0) continue;
+                    if (direction == 0)
                     {
-                        colour = Table[x + i, y].Colour;
-                    }
-                    else
-                    {
-                        colour = ColourEnum.Out;
-                    }
+                        if (x + i >= 0 && x + i < 15) // -向
+                        {
+                            colour = Table[x + i, y].Colour;
+                        }
+                        else
+                        {
+                            colour = ColourEnum.Out;
+                        }
 
-                }
-                if (direction == 1)
-                {
-                    if (y + i >= 0 && y + i < 15) // |向
-                    {
-                        colour = Table[x, y + i].Colour;
                     }
-                    else
+                    if (direction == 1)
                     {
-                        colour = ColourEnum.Out;
-                    }
+                        if (y + i >= 0 && y + i < 15) // |向
+                        {
+                            colour = Table[x, y + i].Colour;
+                        }
+                        else
+                        {
+                            colour = ColourEnum.Out;
+                        }
 
-                }
-                if (direction == 2)
-                {
-                    if (x - i >= 0 && x - i < 15 && y + i >= 0 && y + i < 15) // /向
-                    {
-                        colour = Table[x - i, y + i].Colour;
                     }
-                    else
+                    if (direction == 2)
                     {
-                        colour = ColourEnum.Out;
-                    }
+                        if (x - i >= 0 && x - i < 15 && y + i >= 0 && y + i < 15) // /向
+                        {
+                            colour = Table[x - i, y + i].Colour;
+                        }
+                        else
+                        {
+                            colour = ColourEnum.Out;
+                        }
 
-                }
-                if (direction == 3)
-                {
-                    if (x + i >= 0 && x + i < 15 && y + i >= 0 && y + i < 15) // \向
-                    {
-                        colour = Table[x + i, y + i].Colour;
                     }
-                    else
+                    if (direction == 3)
                     {
-                        colour = ColourEnum.Out;
-                    }
+                        if (x + i >= 0 && x + i < 15 && y + i >= 0 && y + i < 15) // \向
+                        {
+                            colour = Table[x + i, y + i].Colour;
+                        }
+                        else
+                        {
+                            colour = ColourEnum.Out;
+                        }
 
+                    }
+                    line[index] = colour;
                 }
-                line[index] = colour;
+            }
+            catch (Exception e)
+            {
             }
             return line;
         }

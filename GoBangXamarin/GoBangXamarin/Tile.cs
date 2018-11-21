@@ -7,10 +7,11 @@ namespace GoBangXamarin
 {
     public class Tile
     {
-        public int Row { private set; get; }
+        public int Y { private set; get; }
 
-        public int Col { private set; get; }
+        public int X { private set; get; }
         public ContentView TileView { private set; get; }
+        //public Image TileImage { private set; get; }
 
         Label hiddenLabel = new Label
         {
@@ -51,14 +52,17 @@ namespace GoBangXamarin
                     {
                         case TileStatus.Empty:
                             TileView.Content = emptyImage;
+                            //TileImage = emptyImage;
                             break;
 
                         case TileStatus.Black:
-                            TileView.Content = blackImage;
+                           TileView.Content = blackImage;
+                             //TileImage = blackImage;
                             break;
 
                         case TileStatus.White:
                             TileView.Content = whiteImage;
+                            //TileImage = whiteImage;
 
                             break;
                     }
@@ -81,8 +85,9 @@ namespace GoBangXamarin
         public event EventHandler TileStatusChanged;
         public Tile(int row = 0, int col = 0)
         {
-            Row = row;
-            Col = col;
+            Y = row;
+            X = col;
+            //TileImage = gbImage;
 
             TileView = new Frame
             {
@@ -98,7 +103,7 @@ namespace GoBangXamarin
             };
             singleTap.Tapped += OnSingleTap;
             TileView.GestureRecognizers.Add(singleTap);
-
+            //TileImage.GestureRecognizers.Add(singleTap);
 
         }
         public void Initialize()
