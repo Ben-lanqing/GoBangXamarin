@@ -127,6 +127,13 @@ namespace GoBangXamarin
             CurrentBoard = CurrentBoard.ChangeBoard(changedTile.X, changedTile.Y, CurrentStep);
             TileTaped?.Invoke(this, changedTile);
         }
+        public void ChangeTileStatus(int x, int y, int step)
+        {
+            if (step % 2 == 1)
+                tiles[y, x].Tilestatus = TileStatus.Black;
+            else
+                tiles[y, x].Tilestatus = TileStatus.White;
 
+        }
     }
 }

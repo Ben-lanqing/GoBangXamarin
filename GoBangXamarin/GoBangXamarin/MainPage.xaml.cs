@@ -87,7 +87,19 @@ namespace GoBangXamarin
             isGameInProgress = false;
             isGameStart = false;
             msgLb.Text = "";
+            Random rd = new Random();
+            int i = rd.Next(0, 2);
+            if (i == 0)
+            {
+                boardLayout.ChangeTileStatus(7, 7, 1);
 
+                boardLayout.ChangeTileStatus(7, 6, 2);
+            }
+            else
+            {
+                boardLayout.ChangeTileStatus(7, 7, 1);
+                boardLayout.ChangeTileStatus(8, 6, 2);
+            }
         }
         private void BoardLayout_TileTaped(object sender, Tile e)
         {
@@ -98,7 +110,7 @@ namespace GoBangXamarin
             {
                 CurrentStep = e.CurrentStep;
                 BoardList.Add(CurrentBoard);
-                if (CurrentStep >= 3)
+                if (CurrentStep >= 2)
                 {
                     GetNextStep();
                 }
@@ -206,8 +218,9 @@ namespace GoBangXamarin
             PrepareForNewGame();
         }
 
-        private void GetNextStep()
+        private Point GetNextStep()
         {
+            Point point = new Point();
             try
             {
                 hepler = new GoBangHepler(CurrentBoard);
@@ -215,11 +228,14 @@ namespace GoBangXamarin
                 string str = $"NextPiece:  x:{pieceInfo.X + 1} y:{pieceInfo.Y + 1} ";
 
                 msgLb.Text = str;
+                point.X = pieceInfo.X;
+                point.Y = pieceInfo.Y;
             }
             catch (Exception e)
             {
 
             }
+            return point;
         }
     }
 }
