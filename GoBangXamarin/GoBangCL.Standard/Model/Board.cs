@@ -13,7 +13,7 @@ namespace GoBangCL.Standard.Model
         public int Step { private set; get; }
         public List<Piece> DownPieces { private set; get; }
         public List<Piece> RelatedPieces { private set; get; }
-
+        public bool IsWin { private set; get; }
         public Board()
         {
             Table = new Piece[15, 15];
@@ -59,7 +59,7 @@ namespace GoBangCL.Standard.Model
 
             newBoard.DownPieces.Add(p);
             newBoard.UpdateRelatedPieces(x, y);
-
+            IsWin = CheckIsWin(x, y);
             return newBoard;
         }
 
@@ -167,6 +167,45 @@ namespace GoBangCL.Standard.Model
             }
         }
 
+        private bool CheckIsWin(int x, int y)
+        {
+            //4个方向
+            for (int i = 0; i < 4; i++)
+            {
+                int count = 0;
+                ColourEnum[] line = GetLinePieces(x, y, i);
+                //落子点棋色
+                ColourEnum colour = Step % 2 == 1? ColourEnum.Black:ColourEnum.White;
+                for (int j = 0; j < 9; j++)
+                {
+                    //不同色时计数清0
+                    if (line[j] != colour)
+                    {
+                        count = 0;
+                    }
+                    else
+                    {
+                        count++;
+                        if (count == 5)
+                        {
+                            //白5连赢
+                            if (colour == ColourEnum.White)
+                            {
+                                return true;
+                            }
+                            //黑长连禁手
+                            if (line[j + 1] != colour)
+                            {
+                                return true;
+                            }
 
+                        }
+
+                    }
+                }
+
+            }
+            return false;
+        }
     }
 }

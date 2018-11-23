@@ -16,8 +16,8 @@ namespace GoBangXamarin
 {
     public partial class MainPage : ContentPage
     {
+        #region 
         public List<Board> BoardList;
-        public int CurrentStep;
         public GoBangHepler hepler;
         public Board CurrentBoard;
         public ObservableCollection<Piece> downPList;
@@ -28,7 +28,34 @@ namespace GoBangXamarin
         bool isGameStart;
         DateTime gameStartTime;
         const string timeFormat = @"%m\:ss";
+        string gameStr = "7,7:7,6:7,9"
+                      + ";7,7:7,6:8,6"
+                      + ";7,7:7,6:7,5"
+                      + ";7,7:8,6:9,7"
+                      + ";7,7:8,6:9,5"
+                      + ";7,7:7,6:9,6"
+                      + ";7,7:7,6:8,7"
+                      + ";7,7:7,6:9,7"
+                      + ";7,7:8,6:7,8"
+                      + ";7,7:7,6:9,8"
+                      + ";7,7:8,6:6,8"
+                      + ";7,7:8,6:9,6"
+                      + ";7,7:8,6:8,5"
+                      + ";7,7:7,6:7,8"
+                      + ";7,7:8,6:9,8"
+                      + ";7,7:7,6:9,5"
+                      + ";7,7:7,6:8,9"
+                      + ";7,7:7,6:8,8"
+                      + ";7,7:8,6:8,8"
+                      + ";7,7:8,6:7,9"
+                      + ";7,7:8,6:6,9"
+                      + ";7,7:8,6:9,9"
+                      + ";7,7:8,6:8,9"
+                      + ";7,7:8,6:8,7"
+                      + ";7,7:8,6:5,9"
+                      + ";7,7:7,6:9,9";
 
+        #endregion
         public MainPage()
         {
             InitializeComponent();
@@ -36,32 +63,60 @@ namespace GoBangXamarin
         }
         private void Init()
         {
-            PrepareForNewGame();
-            boardLayout.TileTaped += BoardLayout_TileTaped;
-            boardLayout.GameStarted += BoardLayout_GameStarted;
+            Debug.WriteLine($"MainPage Start Init");
             BoardList = new List<Board>();
             CurrentBoard = new Board();
             downPList = new ObservableCollection<Piece>();
             btDic = new Dictionary<Guid, Point>();
-            boardLayout.GameStarted += (sender, args) =>
-            {
-                //isGameInProgress = true;
+            boardLayout.TileTaped += BoardLayout_TileTaped;
+            PrepareForNewGame();
+            //boardLayout.GameStarted += BoardLayout_GameStarted;
+            //boardLayout.GameStarted += (sender, args) =>
+            //{
+            //    //isGameInProgress = true;
 
-                gameStartTime = DateTime.Now;
-                Device.StartTimer(TimeSpan.FromSeconds(1), UpdateTimerLabel);
+            //    gameStartTime = DateTime.Now;
+            //    Device.StartTimer(TimeSpan.FromSeconds(1), UpdateTimerLabel);
 
-                //Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                //{
-                //    timeLabel.Text = (DateTime.Now - gameStartTime).ToString(timeFormat);
-                //    return isGameInProgress;
-                //});
-            };
+            //    //Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+            //    //{
+            //    //    timeLabel.Text = (DateTime.Now - gameStartTime).ToString(timeFormat);
+            //    //    return isGameInProgress;
+            //    //});
+            //};
 
         }
-
-        private void BoardLayout_GameStarted(object sender, EventArgs e)
+        private void PrepareForNewGame()
         {
-            isGameStart = true;
+            Debug.WriteLine($"MainPage Start PrepareForNewGame");
+
+            isGameInProgress = false;
+            isGameStart = false;
+            boardLayout.NewGameInitialize();
+            timeLabel.Text = new TimeSpan(0).ToString(timeFormat);
+            msgLb.Text = "";
+            Debug.WriteLine($"MainPage Start PrepareForNewGame");
+
+            BoardLayout_GameStarted();
+
+            string[] games = gameStr.Split(';');
+            int count = games.Length;
+            Random rd = new Random();
+            int i = rd.Next(0, count);
+
+            string[] points = games[i].Split(':');
+            int length = points.Length;
+            for (int j = 0; j < length; j++)
+            {
+                string[] point = points[j].Split(',');
+                Debug.WriteLine($"MainPage DownPiece {point[0]},{point[1]}");
+
+                boardLayout.DownPiece(int.Parse(point[0]), int.Parse(point[1]), j + 1);
+            }
+            //if ((int)Application.Current.Properties["CurrentStep"] % 2 == 1)
+            //{
+            //    DoAI();
+            //}
         }
 
         bool UpdateTimerLabel()
@@ -78,97 +133,8 @@ namespace GoBangXamarin
             return !isGameStart;
         }
 
-        void PrepareForNewGame()
-        {
-            boardLayout.NewGameInitialize();
-            CurrentStep = 0;
-            Application.Current.Properties["CurrentStep"] = 0;
-            timeLabel.Text = new TimeSpan(0).ToString(timeFormat);
-            isGameInProgress = false;
-            isGameStart = false;
-            msgLb.Text = "";
-            Random rd = new Random();
-            int i = rd.Next(0, 2);
-            if (i == 0)
-            {
-                boardLayout.ChangeTileStatus(7, 7, 1);
+        #region PageEvent
 
-                boardLayout.ChangeTileStatus(7, 6, 2);
-            }
-            else
-            {
-                boardLayout.ChangeTileStatus(7, 7, 1);
-                boardLayout.ChangeTileStatus(8, 6, 2);
-            }
-        }
-        private void BoardLayout_TileTaped(object sender, Tile e)
-        {
-            var boardLayout = sender as BoardLayout;
-            if (boardLayout == null) return;
-            CurrentBoard = boardLayout.CurrentBoard;
-            if (!BoardList.Exists(a => a.Step == CurrentBoard.Step))
-            {
-                CurrentStep = e.CurrentStep;
-                BoardList.Add(CurrentBoard);
-                if (CurrentStep >= 2)
-                {
-                    GetNextStep();
-                }
-            }
-        }
-
-        //private void Button_Clicked(object sender, EventArgs e)
-        //{
-        //    var button = sender as Button;
-        //    var p = btDic[button.Id];
-        //    int x = (int)p.X;
-        //    int y = (int)p.Y;
-
-        //    bool down = DownPiece(x - 1, y);
-        //    if (down)
-        //    {
-        //        button.BackgroundColor = CurrentStep % 2 == 1 ? Color.Black : Color.White;
-        //    }
-        //    else
-        //    {
-        //        //msg.Text = $"{x},{y} Not Empty";
-        //    }
-        //}
-        //private void DownButton_Clicked(object sender, EventArgs e)
-        //{
-        //    int x = Convert.ToInt32(PX.Text);
-        //    int y = Convert.ToInt32(PY.Text);
-        //    DownPiece(x, y);
-        //}
-        //private bool DownPiece(int x, int y)
-        //{
-        //    if (CurrentBoard.DownPieces.Exists(a => a.X == x && a.Y == y)) return false;
-        //    CurrentStep++;
-        //    var newBoard = CurrentBoard.ChangeBoard(x, y, CurrentStep);
-        //    CurrentBoard = newBoard;
-        //    BoardList.Add(newBoard);
-        //    downPList.Clear();
-        //    foreach (var p in newBoard.DownPieces)
-        //    {
-        //        downPList.Add(p);
-        //    }
-        //    string str = $"DownButton:x:{x} y:{y} Step:{CurrentStep}";
-        //    //msg.Text = str;
-        //    UpdateCurrent();
-
-        //    return true;
-        //}
-        private void NextButton_Clicked(object sender, EventArgs e)
-        {
-            GetNextStep();
-        }
-
-        private void UpdateCurrent()
-        {
-            Application.Current.Properties["CurrentStep"] = CurrentStep;
-            //Application.Current.Properties["BoardList"] = BoardList;
-
-        }
         void OnMainContentViewSizeChanged(object sender, EventArgs args)
         {
             ContentView contentView = (ContentView)sender;
@@ -201,7 +167,6 @@ namespace GoBangXamarin
             }
         }
 
-        // Maintains a square aspect ratio for the board.
         void OnBoardContentViewSizeChanged(object sender, EventArgs args)
         {
             ContentView contentView = (ContentView)sender;
@@ -212,19 +177,59 @@ namespace GoBangXamarin
             double vertPadding = (height - dimension) / 2;
             contentView.Padding = new Thickness(horzPadding, vertPadding);
         }
+        void BoardLayout_TileTaped(object sender, Tile e)
+        {
+            if (!isGameStart)
+            {
+                BoardLayout_GameStarted();
+            }
+            Debug.WriteLine($"MainPage: BoardLayout_TileTaped {e.X} {e.Y} ");
+
+            var boardLayout = sender as BoardLayout;
+            if (boardLayout == null) return;
+            CurrentBoard = boardLayout.CurrentBoard;
+            if (!BoardList.Exists(a => a.Step == CurrentBoard.Step))
+            {
+                BoardList.Add(CurrentBoard);
+                //判断是否胜
+                if (CurrentBoard.IsWin)
+                {
+                    boardLayout.IsGameStart = isGameStart = false;
+                    msgLb.Text = $"{CurrentBoard.DownPieces.LastOrDefault().Colour} IsWin! Start A New Game.";
+                }
+                DoAI();
+            }
+        }
+
+        private void BoardLayout_GameStarted()
+        {
+            Debug.WriteLine($"MainPage: GameStart ");
+
+            isGameStart = true;
+            gameStartTime = DateTime.Now;
+            Device.StartTimer(TimeSpan.FromSeconds(1), UpdateTimerLabel);
+
+        }
 
         private void NewGameButton_Clicked(object sender, EventArgs e)
         {
             PrepareForNewGame();
         }
-
-        private Point GetNextStep()
+        private void NextButton_Clicked(object sender, EventArgs e)
         {
+            GetNextStep(CurrentBoard);
+        }
+
+        #endregion
+
+        private Point GetNextStep(Board board)
+        {
+
             Point point = new Point();
             try
             {
-                hepler = new GoBangHepler(CurrentBoard);
-                PieceInfo pieceInfo = hepler.AIGetNext(CurrentBoard);
+                hepler = new GoBangHepler(board);
+                PieceInfo pieceInfo = hepler.AIGetNext(board);
                 string str = $"NextPiece:  x:{pieceInfo.X + 1} y:{pieceInfo.Y + 1} ";
 
                 msgLb.Text = str;
@@ -237,6 +242,20 @@ namespace GoBangXamarin
             }
             return point;
         }
+
+        private void DoAI()
+        {
+            //AI取点
+            int CurrentStep = (int)Application.Current.Properties["CurrentStep"];
+            if (CurrentStep >= 3 && CurrentStep % 2 == 1)
+            {
+                var point = GetNextStep(CurrentBoard);
+                boardLayout.DownPiece((int)point.X, (int)point.Y, CurrentStep + 1);
+
+            }
+
+        }
     }
+
 }
 

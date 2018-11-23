@@ -9,10 +9,8 @@ namespace GoBangXamarin
 {
     public class BoardLayout : AbsoluteLayout
     {
-        int step = 0;
         const int COLS = 15;         // 16
         const int ROWS = 15;         // 16
-
 
         const int BoardWidth = 500;
         const int TileWidth = 30;
@@ -20,26 +18,12 @@ namespace GoBangXamarin
         const int LBorderWidth = 50;
 
         Tile[,] tiles = new Tile[ROWS, COLS];
-        bool isGameInProgress;              // on first tap
-        public event EventHandler GameStarted;
-        public event EventHandler<bool> GameEnded;
-        public event EventHandler<Tile> TileTaped;
 
-        public int CurrentStep
-        {
-            set
-            {
-                if (step != value)
-                {
-                    step = value;
-                    OnPropertyChanged();
-                }
-            }
-            get
-            {
-                return (int)step;
-            }
-        }
+        //public event EventHandler GameStarted;
+        //public event EventHandler<bool> GameEnded;
+        public event EventHandler<Tile> TileTaped;
+        public bool IsGameStart;
+
         public Board CurrentBoard { get; private set; } = new Board();
         Tile lastTile;
         public Tile LastTile
@@ -62,7 +46,7 @@ namespace GoBangXamarin
         Image image = new Image();
         public BoardLayout()
         {
-
+            IsGameStart = false;
             image.Source = ImageSource.FromResource("GoBangXamarin.Image.board.jpg");
             Children.Add(image);
 
@@ -72,8 +56,8 @@ namespace GoBangXamarin
                 {
                     Tile tile = new Tile(row, col);
                     tile.TileStatusChanged += OnTileStatusChanged;
-                    Children.Add(tile.TileView);
-                    //Children.Add(tile.TileImage);
+                    //Children.Add(tile.TileView);
+                    Children.Add(tile.TileImage);
                     tiles[row, col] = tile;
                 }
 
@@ -94,8 +78,8 @@ namespace GoBangXamarin
                     double y = tile.Y * tileHeight + (BorderWidth - TileWidth / 2) * rate;
 
                     Rectangle bounds = new Rectangle(x, y, tileWidth, tileHeight);
-                    SetLayoutBounds(tile.TileView, bounds);
-                    //SetLayoutBounds(tile.TileImage, bounds);
+                    //SetLayoutBounds(tile.TileView, bounds);
+                    SetLayoutBounds(tile.TileImage, bounds);
                 }
             };
 
@@ -103,31 +87,30 @@ namespace GoBangXamarin
         }
         public void NewGameInitialize()
         {
+            Debug.WriteLine($"BoardLayout: Start Init");
+
             // Clear all the tiles.
             foreach (Tile tile in tiles)
                 tile.Initialize();
-            isGameInProgress = false;
-            CurrentStep = 0;
+            Application.Current.Properties["CurrentStep"] = 0;
+            Debug.WriteLine($"BoardLayout: CurrentStep Set 0");
+
+            IsGameStart = true;
         }
         void OnTileStatusChanged(object sender, EventArgs args)
         {
-            // With a first tile tapped, the game is now in progress.
-            if (!isGameInProgress)
-            {
-                isGameInProgress = true;
-                // Fire the GameStarted event.
-                GameStarted?.Invoke(this, EventArgs.Empty);
-            }
+            if (!IsGameStart) return;
+            Debug.WriteLine($"BoardLayout: OnTileStatusChanged ");
 
-            // Get the tile whose status has changed.
             Tile changedTile = (Tile)sender;
             LastTile = changedTile;
-            CurrentStep = (int)Application.Current.Properties["CurrentStep"] + 1;
+            int CurrentStep = (int)Application.Current.Properties["CurrentStep"] + 1;
             Application.Current.Properties["CurrentStep"] = CurrentStep;
             CurrentBoard = CurrentBoard.ChangeBoard(changedTile.X, changedTile.Y, CurrentStep);
+
             TileTaped?.Invoke(this, changedTile);
         }
-        public void ChangeTileStatus(int x, int y, int step)
+        public void DownPiece(int x, int y, int step)
         {
             if (step % 2 == 1)
                 tiles[y, x].Tilestatus = TileStatus.Black;

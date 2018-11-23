@@ -19,7 +19,7 @@ namespace GoBangXamarin
 
             MainPage = new MainPage();
             MainPage.Title = "GoBang";
-            Current.Properties["CurrentStep"] = 0;
+            //Current.Properties["CurrentStep"] = 0;
         }
 
         protected override void OnStart()
