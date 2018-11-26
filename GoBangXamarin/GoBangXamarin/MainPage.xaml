@@ -20,8 +20,8 @@
                     <BoxView Color="Accent" HeightRequest="3" />
                 </StackLayout>
                 <StackLayout Orientation="Horizontal" Spacing="0" VerticalOptions="CenterAndExpand" HorizontalOptions="Center">
-                    <Label BindingContext="{x:Reference boardLayout}" Text="{Binding LastTile.Col, StringFormat='Last: {0},'}" />
-                    <Label BindingContext="{x:Reference boardLayout}" Text="{Binding LastTile.Row, StringFormat=' {0}  '}" />
+                    <Label BindingContext="{x:Reference boardLayout}" Text="{Binding LastTile.X, StringFormat='Last: {0},'}" />
+                    <Label BindingContext="{x:Reference boardLayout}" Text="{Binding LastTile.Y, StringFormat=' {0}  '}" />
                     <Label BindingContext="{x:Reference boardLayout}" Text="{Binding LastTile.Tilestatus, StringFormat=' {0}  '}" />
                     <Label BindingContext="{x:Reference boardLayout}" Text="{Binding CurrentStep, StringFormat=' CurrentStep: {0} '}" />
                 </StackLayout>

@@ -95,8 +95,7 @@ namespace GoBangXamarin
             boardLayout.NewGameInitialize();
             timeLabel.Text = new TimeSpan(0).ToString(timeFormat);
             msgLb.Text = "";
-            Debug.WriteLine($"MainPage Start PrepareForNewGame");
-
+            BoardList.Clear();
             BoardLayout_GameStarted();
 
             string[] games = gameStr.Split(';');

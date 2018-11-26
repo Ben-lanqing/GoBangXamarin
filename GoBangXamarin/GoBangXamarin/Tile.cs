@@ -13,10 +13,13 @@ namespace GoBangXamarin
         //public ContentView TileView { private set; get; }
         public Image TileImage { private set; get; }
 
-        static ImageSource blackImageSource = ImageSource.FromResource("GoBangXamarin.Image.black.png");
-        static ImageSource whiteImageSource = ImageSource.FromResource("GoBangXamarin.Image.white.png");
+        //static ImageSource blackImageSource = ImageSource.FromResource("GoBangXamarin.Image.black.png");
+        //static ImageSource whiteImageSource = ImageSource.FromResource("GoBangXamarin.Image.white.png");
+        //static ImageSource emptyImageSource = ImageSource.FromResource("GoBangXamarin.Image.empty.png");
+        static ImageSource blackImageSource = ImageSource.FromResource("GoBangXamarin.Image.X.png");
+        static ImageSource whiteImageSource = ImageSource.FromResource("GoBangXamarin.Image.O.png");
+        static ImageSource emptyImageSource = ImageSource.FromResource("GoBangXamarin.Image.gb.png");
         static ImageSource gbImageSource = ImageSource.FromResource("GoBangXamarin.Image.gb.png");
-        static ImageSource emptyImageSource = ImageSource.FromResource("GoBangXamarin.Image.empty.png");
 
         TileStatus buttonStatus = TileStatus.Empty;
         public TileStatus Tilestatus

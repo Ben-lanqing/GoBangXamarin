@@ -150,6 +150,7 @@
     <None Remove="Image\LEVImage\lev98.jpg" />
     <None Remove="Image\LEVImage\lev99.jpg" />
     <None Remove="Image\lock.png" />
+    <None Remove="Image\O.png" />
     <None Remove="Image\VCFImage\vcf01.jpg" />
     <None Remove="Image\VCFImage\vcf02.jpg" />
     <None Remove="Image\VCFImage\vcf03.jpg" />
@@ -227,6 +228,7 @@
     <None Remove="Image\VCFImage\vcf75.jpg" />
     <None Remove="Image\VCFImage\vcf76.jpg" />
     <None Remove="Image\white.png" />
+    <None Remove="Image\X.png" />
     <None Remove="Image\原图.jpg" />
   </ItemGroup>
 
@@ -367,6 +369,9 @@
     <EmbeddedResource Include="Image\LEVImage\lev98.jpg" />
     <EmbeddedResource Include="Image\LEVImage\lev99.jpg" />
     <EmbeddedResource Include="Image\lock.png" />
+    <EmbeddedResource Include="Image\O.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Image\VCFImage\vcf01.jpg" />
     <EmbeddedResource Include="Image\VCFImage\vcf02.jpg" />
     <EmbeddedResource Include="Image\VCFImage\vcf03.jpg" />
@@ -444,6 +449,9 @@
     <EmbeddedResource Include="Image\VCFImage\vcf75.jpg" />
     <EmbeddedResource Include="Image\VCFImage\vcf76.jpg" />
     <EmbeddedResource Include="Image\white.png" />
+    <EmbeddedResource Include="Image\X.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Image\原图.jpg" />
   </ItemGroup>
 

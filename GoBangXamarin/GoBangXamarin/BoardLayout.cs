@@ -48,7 +48,7 @@ namespace GoBangXamarin
         {
             IsGameStart = false;
             image.Source = ImageSource.FromResource("GoBangXamarin.Image.board.jpg");
-            Children.Add(image);
+            //Children.Add(image);
 
             lastTile = new Tile();
             for (int row = 0; row < ROWS; row++)
@@ -88,12 +88,12 @@ namespace GoBangXamarin
         public void NewGameInitialize()
         {
             Debug.WriteLine($"BoardLayout: Start Init");
+            Application.Current.Properties["CurrentStep"] = 0;
+            Debug.WriteLine($"BoardLayout: CurrentStep Set 0");
 
             // Clear all the tiles.
             foreach (Tile tile in tiles)
                 tile.Initialize();
-            Application.Current.Properties["CurrentStep"] = 0;
-            Debug.WriteLine($"BoardLayout: CurrentStep Set 0");
 
             IsGameStart = true;
         }
