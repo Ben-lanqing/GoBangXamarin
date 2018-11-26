@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace GoBangXamarin
 {
@@ -18,7 +19,7 @@ namespace GoBangXamarin
         //static ImageSource emptyImageSource = ImageSource.FromResource("GoBangXamarin.Image.empty.png");
         static ImageSource blackImageSource = ImageSource.FromResource("GoBangXamarin.Image.X.png");
         static ImageSource whiteImageSource = ImageSource.FromResource("GoBangXamarin.Image.O.png");
-        static ImageSource emptyImageSource = ImageSource.FromResource("GoBangXamarin.Image.gb.png");
+        static ImageSource emptyImageSource = ImageSource.FromResource("GoBangXamarin.Image.empty+.png");
         static ImageSource gbImageSource = ImageSource.FromResource("GoBangXamarin.Image.gb.png");
 
         TileStatus buttonStatus = TileStatus.Empty;
@@ -34,24 +35,30 @@ namespace GoBangXamarin
                     {
                         case TileStatus.Empty:
                             //TileView.Content = emptyImage;
-                            TileImage.SetValue(Image.SourceProperty, emptyImageSource);
+                            while (TileImage.Source.Id != emptyImageSource.Id)
+                            {
+                                TileImage.SetValue(Image.SourceProperty, emptyImageSource);
+                            }
                             break;
 
                         case TileStatus.Black:
                             //TileView.Content = blackImage;
-                            TileImage.SetValue(Image.SourceProperty, blackImageSource);
+                            while (TileImage.Source.Id != blackImageSource.Id)
+                            {
+                                TileImage.SetValue(Image.SourceProperty, blackImageSource);
+                            }
                             break;
 
                         case TileStatus.White:
                             //TileView.Content = whiteImage;
-                            TileImage.SetValue(Image.SourceProperty, whiteImageSource);
-
+                            while (TileImage.Source.Id != whiteImageSource.Id)
+                            {
+                                TileImage.SetValue(Image.SourceProperty, whiteImageSource);
+                            }
                             break;
                     }
-                    if (!doNotFireEvent)
-                    {
-                        TileStatusChanged?.Invoke(this, null);
-                    }
+                    Debug.WriteLine($"Tile: Tilestatus  [{X},{Y}] ButtonStatus:{buttonStatus }");
+
                 }
             }
             get
@@ -59,55 +66,35 @@ namespace GoBangXamarin
                 return buttonStatus;
             }
         }
-        bool doNotFireEvent;
 
-        public event EventHandler TileStatusChanged;
+        public event EventHandler SingleTaped;
         public Tile(int row = 0, int col = 0)
         {
             Y = row;
             X = col;
             TileImage = new Image();
-            //TileView = new Frame
-            //{
-            //    Opacity = 0.1,
-            //    //Content = hiddenLabel,
-            //    //BackgroundColor = Color.p,
-            //    //BorderColor = Color.Black,
-            //    Padding = new Thickness(1)
-            //};
-
             TapGestureRecognizer singleTap = new TapGestureRecognizer
             {
                 NumberOfTapsRequired = 1
             };
             singleTap.Tapped += OnSingleTap;
-            //TileView.GestureRecognizers.Add(singleTap);
             TileImage.GestureRecognizers.Add(singleTap);
-
         }
         public void Initialize()
         {
-            doNotFireEvent = true;
             buttonStatus = TileStatus.Empty;
-            //TileView.Content = emptyImage;
             TileImage.SetValue(Image.SourceProperty, emptyImageSource);
-
-            doNotFireEvent = false;
         }
 
         void OnSingleTap(object sender, object args)
         {
-            if (buttonStatus == TileStatus.Empty)
+            if (buttonStatus != TileStatus.White && buttonStatus != TileStatus.Black)
             {
-                int nextStep = (int)Application.Current.Properties["CurrentStep"] + 1;
-                if (nextStep % 2 == 1)
-                {
-                    Tilestatus = TileStatus.Black;
-                }
-                else
-                {
-                    Tilestatus = TileStatus.White;
-                }
+                SingleTaped?.Invoke(this, null);
+            }
+            else
+            {
+                Debug.WriteLine($"Tile: OnSingleTap Err [{X},{Y}] ButtonStatus:{buttonStatus }");
             }
         }
 

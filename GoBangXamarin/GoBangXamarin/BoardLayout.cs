@@ -3,29 +3,30 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace GoBangXamarin
 {
     public class BoardLayout : AbsoluteLayout
     {
+        #region 
         const int COLS = 15;         // 16
         const int ROWS = 15;         // 16
-
         const int BoardWidth = 500;
         const int TileWidth = 30;
         const int BorderWidth = 30;
         const int LBorderWidth = 50;
+        Tile lastTile;
+        Image image = new Image();
 
-        Tile[,] tiles = new Tile[ROWS, COLS];
+        #endregion
+        public Tile[,] tiles = new Tile[ROWS, COLS];
 
-        //public event EventHandler GameStarted;
-        //public event EventHandler<bool> GameEnded;
         public event EventHandler<Tile> TileTaped;
         public bool IsGameStart;
 
-        public Board CurrentBoard { get; private set; } = new Board();
-        Tile lastTile;
         public Tile LastTile
         {
             set
@@ -43,7 +44,6 @@ namespace GoBangXamarin
         }
 
 
-        Image image = new Image();
         public BoardLayout()
         {
             IsGameStart = false;
@@ -55,7 +55,8 @@ namespace GoBangXamarin
                 for (int col = 0; col < COLS; col++)
                 {
                     Tile tile = new Tile(row, col);
-                    tile.TileStatusChanged += OnTileStatusChanged;
+                    //tile.TileStatusChanged += OnTileStatusChanged;
+                    tile.SingleTaped += Tile_SingleTaped; ;
                     //Children.Add(tile.TileView);
                     Children.Add(tile.TileImage);
                     tiles[row, col] = tile;
@@ -65,9 +66,6 @@ namespace GoBangXamarin
             {
                 double min = Math.Min(Width, Height);
                 double rate = min / BoardWidth;
-                //double tileWidth = this.Width / COLS;
-                //double tileHeight = this.Height / ROWS;
-
                 double tileWidth = TileWidth * rate;
                 double tileHeight = tileWidth;
                 SetLayoutBounds(image, new Rectangle(0, 0, min, min));
@@ -87,36 +85,61 @@ namespace GoBangXamarin
         }
         public void NewGameInitialize()
         {
-            Debug.WriteLine($"BoardLayout: Start Init");
-            Application.Current.Properties["CurrentStep"] = 0;
-            Debug.WriteLine($"BoardLayout: CurrentStep Set 0");
-
             // Clear all the tiles.
             foreach (Tile tile in tiles)
+            {
+                Thread.Sleep(1);
                 tile.Initialize();
-
+            }
             IsGameStart = true;
-        }
-        void OnTileStatusChanged(object sender, EventArgs args)
-        {
-            if (!IsGameStart) return;
-            Debug.WriteLine($"BoardLayout: OnTileStatusChanged ");
-
-            Tile changedTile = (Tile)sender;
-            LastTile = changedTile;
-            int CurrentStep = (int)Application.Current.Properties["CurrentStep"] + 1;
-            Application.Current.Properties["CurrentStep"] = CurrentStep;
-            CurrentBoard = CurrentBoard.ChangeBoard(changedTile.X, changedTile.Y, CurrentStep);
-
-            TileTaped?.Invoke(this, changedTile);
         }
         public void DownPiece(int x, int y, int step)
         {
-            if (step % 2 == 1)
-                tiles[y, x].Tilestatus = TileStatus.Black;
-            else
-                tiles[y, x].Tilestatus = TileStatus.White;
-
+            doBoardChange(tiles[y, x], step);
         }
+
+        private void Tile_SingleTaped(object sender, EventArgs e)
+        {
+            Tile tile = sender as Tile;
+            int nextStep = (int)Application.Current.Properties["CurrentStep"] + 1;
+            doBoardChange(tile, nextStep);
+        }
+        private void doBoardChange(Tile tile, int step)
+        {
+            if (IsGameStart)
+            {
+                if (step % 2 == 1)
+                    tile.Tilestatus = TileStatus.Black;
+                else
+                    tile.Tilestatus = TileStatus.White;
+            }
+            LastTile = tile;
+            TileTaped?.Invoke(this, tile);
+            checkTileSource(tile);
+        }
+        static ImageSource blackImageSource = ImageSource.FromResource("GoBangXamarin.Image.X.png");
+        static ImageSource whiteImageSource = ImageSource.FromResource("GoBangXamarin.Image.O.png");
+
+        private void checkTileSource(Tile tile)
+        {
+            if (tile.Tilestatus == TileStatus.Black)
+            {
+                if (tile.TileImage.Source.Id != blackImageSource.Id)
+                {
+                    tile.TileImage.SetValue(Image.SourceProperty, blackImageSource);
+                    Debug.WriteLine($"MainPage: checkTileSource [{tile.X},{tile.Y}] Tilestatus:{tile.Tilestatus }");
+                }
+            }
+            if (tile.Tilestatus == TileStatus.White)
+            {
+                if (tile.TileImage.Source.Id != whiteImageSource.Id)
+                {
+                    tile.TileImage.SetValue(Image.SourceProperty, whiteImageSource);
+                    Debug.WriteLine($"MainPage: checkTileSource [{tile.X},{tile.Y}] Tilestatus:{tile.Tilestatus }");
+
+                }
+            }
+        }
+
     }
 }

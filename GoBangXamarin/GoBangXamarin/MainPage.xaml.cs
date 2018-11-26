@@ -11,19 +11,21 @@ using System.Collections.ObjectModel;
 using SkiaSharp;
 using System.Reflection;
 using System.IO;
+using System.Threading;
 
 namespace GoBangXamarin
 {
     public partial class MainPage : ContentPage
     {
         #region 
+        int player = 1;
         public List<Board> BoardList;
         public GoBangHepler hepler;
         public Board CurrentBoard;
-        public ObservableCollection<Piece> downPList;
+        //public ObservableCollection<Piece> downPList;
         //SKCanvas sKCanvas;
         //SKBitmap bitmap;
-        Dictionary<Guid, Point> btDic;
+        //Dictionary<Guid, Point> btDic;
         bool isGameInProgress;
         bool isGameStart;
         DateTime gameStartTime;
@@ -66,36 +68,19 @@ namespace GoBangXamarin
             Debug.WriteLine($"MainPage Start Init");
             BoardList = new List<Board>();
             CurrentBoard = new Board();
-            downPList = new ObservableCollection<Piece>();
-            btDic = new Dictionary<Guid, Point>();
             boardLayout.TileTaped += BoardLayout_TileTaped;
             PrepareForNewGame();
-            //boardLayout.GameStarted += BoardLayout_GameStarted;
-            //boardLayout.GameStarted += (sender, args) =>
-            //{
-            //    //isGameInProgress = true;
-
-            //    gameStartTime = DateTime.Now;
-            //    Device.StartTimer(TimeSpan.FromSeconds(1), UpdateTimerLabel);
-
-            //    //Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-            //    //{
-            //    //    timeLabel.Text = (DateTime.Now - gameStartTime).ToString(timeFormat);
-            //    //    return isGameInProgress;
-            //    //});
-            //};
-
         }
         private void PrepareForNewGame()
         {
-            Debug.WriteLine($"MainPage Start PrepareForNewGame");
-
+            Debug.WriteLine($"MainPage Start PrepareForNewGame~~~~~~~~~~~~~~");
+            BoardList.Clear();
+            CurrentBoard = new Board();
             isGameInProgress = false;
             isGameStart = false;
             boardLayout.NewGameInitialize();
             timeLabel.Text = new TimeSpan(0).ToString(timeFormat);
             msgLb.Text = "";
-            BoardList.Clear();
             BoardLayout_GameStarted();
 
             string[] games = gameStr.Split(';');
@@ -108,7 +93,7 @@ namespace GoBangXamarin
             for (int j = 0; j < length; j++)
             {
                 string[] point = points[j].Split(',');
-                Debug.WriteLine($"MainPage DownPiece {point[0]},{point[1]}");
+                Debug.WriteLine($"MainPage DownPiece [{point[0]},{point[1]}] step:{CurrentBoard.Step}");
 
                 boardLayout.DownPiece(int.Parse(point[0]), int.Parse(point[1]), j + 1);
             }
@@ -182,11 +167,17 @@ namespace GoBangXamarin
             {
                 BoardLayout_GameStarted();
             }
-            Debug.WriteLine($"MainPage: BoardLayout_TileTaped {e.X} {e.Y} ");
-
             var boardLayout = sender as BoardLayout;
+            BoardLayoutTileTapedAsync(boardLayout, e);
+        }
+
+        void BoardLayoutTileTapedAsync(BoardLayout boardLayout, Tile e)
+        {
             if (boardLayout == null) return;
-            CurrentBoard = boardLayout.CurrentBoard;
+            CurrentBoard = CurrentBoard.ChangeBoard(e.X, e.Y, CurrentBoard.Step + 1);
+            Application.Current.Properties["CurrentStep"] = CurrentBoard.Step;
+            Debug.WriteLine($"MainPage: BoardLayout_TileTaped [{e.X},{e.Y}] TileStep:{CurrentBoard.Step}");
+
             if (!BoardList.Exists(a => a.Step == CurrentBoard.Step))
             {
                 BoardList.Add(CurrentBoard);
@@ -197,6 +188,7 @@ namespace GoBangXamarin
                     msgLb.Text = $"{CurrentBoard.DownPieces.LastOrDefault().Colour} IsWin! Start A New Game.";
                 }
                 DoAI();
+                //await Task.Run(() => DoAI()); ;
             }
         }
 
@@ -220,10 +212,20 @@ namespace GoBangXamarin
         }
 
         #endregion
+        private void DoAI()
+        {
+            //AI取点
+            int CurrentStep = CurrentBoard.Step;
+            if (CurrentStep >= 3 && CurrentStep % 2 == player)
+            {
+                var point = GetNextStep(CurrentBoard);
+                Debug.WriteLine($"MainPage: DoAI [{point.X},{point.Y}] TileStep:{CurrentStep }");
+                boardLayout.DownPiece((int)point.X, (int)point.Y, CurrentStep + 1);
+            }
+        }
 
         private Point GetNextStep(Board board)
         {
-
             Point point = new Point();
             try
             {
@@ -242,18 +244,6 @@ namespace GoBangXamarin
             return point;
         }
 
-        private void DoAI()
-        {
-            //AI取点
-            int CurrentStep = (int)Application.Current.Properties["CurrentStep"];
-            if (CurrentStep >= 3 && CurrentStep % 2 == 1)
-            {
-                var point = GetNextStep(CurrentBoard);
-                boardLayout.DownPiece((int)point.X, (int)point.Y, CurrentStep + 1);
-
-            }
-
-        }
     }
 
 }
