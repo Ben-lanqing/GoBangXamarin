@@ -14,6 +14,17 @@ namespace GoBangCL.Standard.Model
         public List<Piece> DownPieces { private set; get; }
         public List<Piece> RelatedPieces { private set; get; }
         public bool IsWin { private set; get; }
+        public ColourEnum Colour
+        {
+            get
+            {
+                if (Step % 2 == 1)
+                    return ColourEnum.Black;
+                else
+                    return ColourEnum.White;
+            }
+        }
+
         public Board()
         {
             Table = new Piece[15, 15];
@@ -59,7 +70,10 @@ namespace GoBangCL.Standard.Model
 
             newBoard.DownPieces.Add(p);
             newBoard.UpdateRelatedPieces(x, y);
-            IsWin = CheckIsWin(x, y);
+            if (step > 5)
+            {
+                newBoard.IsWin = newBoard.CheckIsWin(x, y);
+            }
             return newBoard;
         }
 
@@ -72,7 +86,7 @@ namespace GoBangCL.Standard.Model
                 for (int i = -4; i <= 4; i++)
                 {
                     index = 4 + i;
-                    if (i == 0) continue;
+                    //if (i == 0) continue;
                     if (direction == 0)
                     {
                         if (x + i >= 0 && x + i < 15) // -向
@@ -175,9 +189,10 @@ namespace GoBangCL.Standard.Model
                 int count = 0;
                 ColourEnum[] line = GetLinePieces(x, y, i);
                 //落子点棋色
-                ColourEnum colour = Step % 2 == 1? ColourEnum.Black:ColourEnum.White;
+                ColourEnum colour = Step % 2 == 1 ? ColourEnum.Black : ColourEnum.White;
                 for (int j = 0; j < 9; j++)
                 {
+                    //if (j == 4) continue;
                     //不同色时计数清0
                     if (line[j] != colour)
                     {

@@ -207,7 +207,7 @@ namespace GoBangCL.Standard
                 {
                     if (x < 0 || x > 14 || x == i)
                         continue;
-                    if (j < 0 || j > 14 )
+                    if (j < 0 || j > 14)
                         continue;
                     PieceInfo info = board.GetPieceInfo(x, j);
                     Boolean isd = IsDefendCrossPoint(info, player, 0);
@@ -223,7 +223,7 @@ namespace GoBangCL.Standard
                 {
                     if (y < 0 || y > 14 || y == j)
                         continue;
-                    if (i < 0 || i > 14 )
+                    if (i < 0 || i > 14)
                         continue;
                     PieceInfo info = board.GetPieceInfo(i, y);
                     Boolean isd = IsDefendCrossPoint(info, player, 1);

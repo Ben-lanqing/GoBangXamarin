@@ -41,9 +41,9 @@ namespace GoBangXamarin
             BoardList = new List<Board>();
             isGameInProgress = false;
             isGameStart = false;
-            boardLayout.Player = 1;
+            boardLayout.Player = ColourEnum.Black;
             boardLayout.TileStatusChanged += BoardLayout_TileStatusChanged;
-           // PrepareForNewGame();
+            // PrepareForNewGame();
         }
         private void PrepareForNewGame()
         {
@@ -55,8 +55,11 @@ namespace GoBangXamarin
                 isGameInProgress = false;
                 isGameStart = false;
                 boardLayout.NewGameInitialize();
+
                 timeLabel.Text = new TimeSpan(0).ToString(ConstClass.TimeFormat);
                 msgLb.Text = "";
+                msgLb.TextColor = Color.Black;
+
             }
             catch (Exception ex)
             {
@@ -75,9 +78,9 @@ namespace GoBangXamarin
             int length = points.Length;
             for (int j = 0; j < length; j++)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(50);
                 string[] point = points[j].Split(',');
-                Debug.WriteLine($"MainPage DownPiece [{point[0]},{point[1]}] step:{CurrentBoard.Step}");
+                //Debug.WriteLine($"MainPage NewGame [{point[0]},{point[1]}] step:{CurrentBoard.Step}");
 
                 boardLayout.BoardChange(int.Parse(point[0]), int.Parse(point[1]));
             }
@@ -99,25 +102,24 @@ namespace GoBangXamarin
             try
             {
                 if (boardLayout == null) return;
-                CurrentBoard = CurrentBoard.ChangeBoard(e.X, e.Y, CurrentBoard.Step + 1);
-                Application.Current.Properties["CurrentStep"] = CurrentBoard.Step;
-                Debug.WriteLine($"MainPage: BoardTileChanged [{e.X},{e.Y}] TileStep:{CurrentBoard.Step}");
-
-                if (!BoardList.Exists(a => a.Step == CurrentBoard.Step))
+                var board = CurrentBoard.ChangeBoard(e.X, e.Y, CurrentBoard.Step + 1);
+                if (!BoardList.Exists(a => a.Step == board.Step))
                 {
+                    Application.Current.Properties["CurrentStep"] = board.Step;
+                    CurrentBoard = board;
                     BoardList.Add(CurrentBoard);
+                    ChangeLastImage();
                     //判断是否胜
-                    if (CurrentBoard.IsWin)
+                    if (CurrentBoard.Step > 5 && CurrentBoard.IsWin)
                     {
                         boardLayout.IsGameStart = isGameStart = false;
-                        msgLb.Text = $"{CurrentBoard.DownPieces.LastOrDefault().Colour} IsWin! Start A New Game.";
+                        msgLb.Text = $"[{CurrentBoard.Colour}] IsWin! Start A New Game.";
+                        msgLb.TextColor = Color.Red;
                     }
                     Device.BeginInvokeOnMainThread(() =>
                     {
                         DoAI();
                     });
-                    //Task.Run(() => DoAI());
-                    //DoAI();
                 }
                 else
                 {
@@ -129,12 +131,25 @@ namespace GoBangXamarin
                 Debug.WriteLine(StaticClass.LogException("BoardTileChanged", ex));
             }
         }
+        private void ChangeLastImage()
+        {
+            int count = CurrentBoard.DownPieces.Count();
+            if (count > 2)
+            {
+                var lastP1 = CurrentBoard.DownPieces[count - 1];
+                boardLayout.BoardChange(lastP1.X, lastP1.Y, lastP1.Colour == ColourEnum.Black ? TileStatus.BlackGB : TileStatus.WhiteGB, false);
+                var lastP2 = CurrentBoard.DownPieces[count - 2];
+                boardLayout.BoardChange(lastP2.X, lastP2.Y, lastP2.Colour == ColourEnum.Black ? TileStatus.Black : TileStatus.White, false);
 
+            }
+        }
 
         private void NewGameButton_Clicked(object sender, EventArgs e)
         {
             BoardLayout_GameStarted();
+
             PrepareForNewGame();
+            //Thread.Sleep(1000);
             NewGame();
         }
         private void NextButton_Clicked(object sender, EventArgs e)
@@ -209,10 +224,10 @@ namespace GoBangXamarin
         {
             //AI取点
             int CurrentStep = CurrentBoard.Step;
-            if (CurrentStep >= 3 && CurrentStep % 2 == boardLayout.Player)
+            if (CurrentStep >= 3 && CurrentBoard.Colour == boardLayout.Player)
             {
                 var point = GetNextStep(CurrentBoard);
-                Debug.WriteLine($"MainPage: DoAI [{point.X},{point.Y}] TileStep:{CurrentStep }");
+                //Debug.WriteLine($"MainPage: DoAI [{point.X},{point.Y}] TileStep:{CurrentStep }");
                 boardLayout.BoardChange((int)point.X, (int)point.Y);
             }
         }
@@ -237,6 +252,27 @@ namespace GoBangXamarin
             return point;
         }
 
+        private void BackButton_Clicked(object sender, EventArgs e)
+        {
+            BackOneStep();
+            if (CurrentBoard.Colour == boardLayout.Player)
+            {
+                BackOneStep();
+            }
+        }
+
+        private void BackOneStep()
+        {
+            if (BoardList.Count < 5) return;
+            var board = BoardList.LastOrDefault();
+            BoardList.Remove(board);
+            var lastP = board.DownPieces.Last();
+            boardLayout.BoardChange(lastP.X, lastP.Y, TileStatus.Empty, false);
+            //boardLayout.tiles[lastP.X, lastP.Y].ChangeTileStatus(TileStatus.Empty);
+            var newboard = BoardList.LastOrDefault();
+            CurrentBoard = newboard;
+            ChangeLastImage();
+        }
     }
 
 }

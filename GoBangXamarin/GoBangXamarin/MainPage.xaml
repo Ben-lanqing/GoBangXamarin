@@ -29,7 +29,9 @@
                 <StackLayout HorizontalOptions="Center" Spacing="0">
                     <Button x:Name="NewGameButton" Text=" New Game " HorizontalOptions="Center" VerticalOptions="Center" Clicked="NewGameButton_Clicked"
                             BorderColor="Black" BorderWidth="2" BackgroundColor="White" TextColor="Black" />
-                    <Button x:Name="NextButton" Text=" Next Step " HorizontalOptions="Center" VerticalOptions="Center" Clicked="NextButton_Clicked"
+                    <!--<Button x:Name="NextButton" Text=" Next Step " HorizontalOptions="Center" VerticalOptions="Center" Clicked="NextButton_Clicked"
+                            BorderColor="Black" BorderWidth="2" BackgroundColor="White" TextColor="Black" />-->
+                    <Button x:Name="BackButton" Text=" Back Step " HorizontalOptions="Center" VerticalOptions="Center" Clicked="BackButton_Clicked"
                             BorderColor="Black" BorderWidth="2" BackgroundColor="White" TextColor="Black" />
                 </StackLayout>
                 <Label x:Name="msgLb" Text=" " VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />

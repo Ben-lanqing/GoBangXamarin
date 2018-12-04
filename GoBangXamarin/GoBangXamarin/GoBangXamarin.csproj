@@ -30,6 +30,8 @@
     <None Remove="Image\empty+.png" />
     <None Remove="Image\empty.png" />
     <None Remove="Image\gb.png" />
+    <None Remove="Image\gbO.png" />
+    <None Remove="Image\gbX.png" />
     <None Remove="Image\LEVImage\lev1.jpg" />
     <None Remove="Image\LEVImage\lev10.jpg" />
     <None Remove="Image\LEVImage\lev100.jpg" />
@@ -252,6 +254,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Image\gb.png" />
+    <EmbeddedResource Include="Image\gbO.png" />
+    <EmbeddedResource Include="Image\gbX.png" />
     <EmbeddedResource Include="Image\LEVImage\lev1.jpg" />
     <EmbeddedResource Include="Image\LEVImage\lev10.jpg" />
     <EmbeddedResource Include="Image\LEVImage\lev100.jpg" />
