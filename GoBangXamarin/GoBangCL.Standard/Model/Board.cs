@@ -209,7 +209,7 @@ namespace GoBangCL.Standard.Model
                                 return true;
                             }
                             //黑长连禁手
-                            if (line[j + 1] != colour)
+                            if (j + 1>=9||line[j + 1] != colour)
                             {
                                 return true;
                             }

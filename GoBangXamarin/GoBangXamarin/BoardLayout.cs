@@ -21,6 +21,7 @@ namespace GoBangXamarin
         const int LBorderWidth = 50;
         Tile lastTile;
         Image imageboard = new Image();
+        public Image ImageGB = new Image();
         //static ImageSource blackImageSource = ImageSource.FromResource("GoBangXamarin.Image.X.png");
         //static ImageSource whiteImageSource = ImageSource.FromResource("GoBangXamarin.Image.O.png");
 
@@ -62,8 +63,12 @@ namespace GoBangXamarin
 
         public BoardLayout()
         {
+            ImageGB.Source = ImageSource.FromResource("GoBangXamarin.Image.black.png");
+            ImageGB.Opacity = 0;
+            Children.Add(ImageGB);
+
             //imageboard.Source = ImageSource.FromResource("GoBangXamarin.Image.board.jpg");
-            //Children.Add(image);           
+            //Children.Add(imageboard);           
             IsGameStart = false;
             lastTile = new Tile();
             Player = ColourEnum.Empty;
@@ -168,6 +173,11 @@ namespace GoBangXamarin
                 if (notice)
                 {
                     LastTile = tile;
+
+                    //ImageGB.Opacity = 1;
+                    //Rectangle bounds = new Rectangle(LastTile.TileImage.X, LastTile.TileImage.Y, LastTile.TileImage.Width, LastTile.TileImage.Height);
+                    //SetLayoutBounds(ImageGB, bounds);
+
                     TileStatusChanged?.Invoke(this, tile);
                 }
             }

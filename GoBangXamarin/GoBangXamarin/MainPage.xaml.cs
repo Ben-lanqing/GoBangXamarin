@@ -79,7 +79,7 @@ namespace GoBangXamarin
             int length = points.Length;
             for (int j = 0; j < length; j++)
             {
-                
+
                 string[] point = points[j].Split(',');
                 boardLayout.BoardChange(int.Parse(point[0]), int.Parse(point[1]));
             }
@@ -96,24 +96,25 @@ namespace GoBangXamarin
             BoardTileChanged(boardLayout, e);
         }
 
-        void BoardTileChanged(BoardLayout boardLayout, Tile e)
+        void BoardTileChanged(BoardLayout boardLayout, Tile tile)
         {
             try
             {
                 if (boardLayout == null) return;
-                var board = CurrentBoard.ChangeBoard(e.X, e.Y, CurrentBoard.Step + 1);
+                var board = CurrentBoard.ChangeBoard(tile.X, tile.Y, CurrentBoard.Step + 1);
                 if (!BoardList.Exists(a => a.Step == board.Step))
                 {
                     Application.Current.Properties["CurrentStep"] = board.Step;
                     CurrentBoard = board;
                     BoardList.Add(CurrentBoard);
-                    ChangeLastImage();
+                    ChangeLastImage(tile);
                     //判断是否胜
                     if (CurrentBoard.Step > 5 && CurrentBoard.IsWin)
                     {
                         boardLayout.IsGameStart = isGameStart = false;
                         msgLb.Text = $"[{CurrentBoard.Colour}] IsWin! Start A New Game.";
                         msgLb.TextColor = Color.Red;
+                        return;
                     }
 
                     Device.BeginInvokeOnMainThread(() =>
@@ -123,7 +124,7 @@ namespace GoBangXamarin
                 }
                 else
                 {
-                    Debug.WriteLine($"MainPage: BoardTileChanged Err [{e.X},{e.Y}] TileStep:{CurrentBoard.Step}");
+                    Debug.WriteLine($"MainPage: BoardTileChanged Err [{tile.X},{tile.Y}] TileStep:{CurrentBoard.Step}");
                 }
             }
             catch (Exception ex)
@@ -131,16 +132,22 @@ namespace GoBangXamarin
                 Debug.WriteLine(StaticClass.LogException("BoardTileChanged", ex));
             }
         }
-        private void ChangeLastImage()
+        private void ChangeLastImage(Tile tile)
         {
             int count = CurrentBoard.DownPieces.Count();
             if (count > 2)
             {
-                var lastP1 = CurrentBoard.DownPieces[count - 1];
-                boardLayout.BoardChange(lastP1.X, lastP1.Y, lastP1.Colour == ColourEnum.Black ? TileStatus.BlackGB : TileStatus.WhiteGB, false);
-                Thread.Sleep(200);
-                var lastP2 = CurrentBoard.DownPieces[count - 2];
-                boardLayout.BoardChange(lastP2.X, lastP2.Y, lastP2.Colour == ColourEnum.Black ? TileStatus.Black : TileStatus.White, false);
+                Image image = tile.TileImage;
+                Image imageGB = boardLayout.ImageGB;
+                //imageGB.Opacity = 1;
+                Rectangle bounds = new Rectangle(image.X, image.Y, image.Width, image.Height);
+                AbsoluteLayout.SetLayoutBounds(imageGB, image.Bounds);
+
+                //var lastP1 = CurrentBoard.DownPieces[count - 1];
+                //boardLayout.BoardChange(lastP1.X, lastP1.Y, lastP1.Colour == ColourEnum.Black ? TileStatus.BlackGB : TileStatus.WhiteGB, false);
+                //Thread.Sleep(200);
+                //var lastP2 = CurrentBoard.DownPieces[count - 2];
+                //boardLayout.BoardChange(lastP2.X, lastP2.Y, lastP2.Colour == ColourEnum.Black ? TileStatus.Black : TileStatus.White, false);
 
             }
         }
@@ -272,7 +279,7 @@ namespace GoBangXamarin
             //boardLayout.tiles[lastP.X, lastP.Y].ChangeTileStatus(TileStatus.Empty);
             var newboard = BoardList.LastOrDefault();
             CurrentBoard = newboard;
-            ChangeLastImage();
+            ChangeLastImage(boardLayout.tiles[lastP.X, lastP.Y]);
         }
     }
 
