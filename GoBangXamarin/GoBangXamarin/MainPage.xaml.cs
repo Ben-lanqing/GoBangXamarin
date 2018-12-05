@@ -50,6 +50,7 @@ namespace GoBangXamarin
             try
             {
                 Debug.WriteLine($"MainPage Start PrepareForNewGame~~~~~~~~~~~~~~");
+                Application.Current.Properties["CurrentStep"] = 0;
                 CurrentBoard = new Board();
                 BoardList.Clear();
                 isGameInProgress = false;
@@ -67,7 +68,7 @@ namespace GoBangXamarin
             }
         }
 
-        private void NewGame()
+        private void NewGameStart()
         {
             string[] games = ConstClass.GameStr.Split(';');
             int count = games.Length;
@@ -78,10 +79,8 @@ namespace GoBangXamarin
             int length = points.Length;
             for (int j = 0; j < length; j++)
             {
-                Thread.Sleep(50);
+                
                 string[] point = points[j].Split(',');
-                //Debug.WriteLine($"MainPage NewGame [{point[0]},{point[1]}] step:{CurrentBoard.Step}");
-
                 boardLayout.BoardChange(int.Parse(point[0]), int.Parse(point[1]));
             }
         }
@@ -116,6 +115,7 @@ namespace GoBangXamarin
                         msgLb.Text = $"[{CurrentBoard.Colour}] IsWin! Start A New Game.";
                         msgLb.TextColor = Color.Red;
                     }
+
                     Device.BeginInvokeOnMainThread(() =>
                     {
                         DoAI();
@@ -138,6 +138,7 @@ namespace GoBangXamarin
             {
                 var lastP1 = CurrentBoard.DownPieces[count - 1];
                 boardLayout.BoardChange(lastP1.X, lastP1.Y, lastP1.Colour == ColourEnum.Black ? TileStatus.BlackGB : TileStatus.WhiteGB, false);
+                Thread.Sleep(200);
                 var lastP2 = CurrentBoard.DownPieces[count - 2];
                 boardLayout.BoardChange(lastP2.X, lastP2.Y, lastP2.Colour == ColourEnum.Black ? TileStatus.Black : TileStatus.White, false);
 
@@ -150,7 +151,7 @@ namespace GoBangXamarin
 
             PrepareForNewGame();
             //Thread.Sleep(1000);
-            NewGame();
+            NewGameStart();
         }
         private void NextButton_Clicked(object sender, EventArgs e)
         {

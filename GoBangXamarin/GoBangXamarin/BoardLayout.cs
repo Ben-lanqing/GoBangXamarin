@@ -107,13 +107,24 @@ namespace GoBangXamarin
         public void NewGameInitialize()
         {
             IsGameStart = false;
-
-            foreach (Tile tile in tiles)
+            for (int row = 0; row < ROWS; row++)
             {
-                //Thread.Sleep(1);
-                tile.EmptyTile();
+                for (int col = 0; col < COLS; col++)
+                {
+                    if (tiles[col, row] == null)
+                    {
+                        Thread.Sleep(10);
+                        Tile tile = new Tile(row, col);
+                        tile.SingleTaped += Tile_SingleTaped; ;
+                        Children.Add(tile.TileImage);
+                        tiles[col, row] = tile;
+                    }
+                    else
+                    {
+                        tiles[col, row].EmptyTile();
+                    }
+                }
             }
-            //Thread.Sleep(1000);
 
             IsGameStart = true;
         }

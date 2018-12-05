@@ -4,6 +4,7 @@ using System.Text;
 using Xamarin.Forms;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace GoBangXamarin
 {
@@ -32,6 +33,7 @@ namespace GoBangXamarin
             Y = row;
             X = col;
             TileImage = new Image();
+            TileImage.Source = emptyImageSource;
             //TileImage.SetValue(Image.SourceProperty, emptyImageSource);
             Tilestatus = TileStatus.Empty;
 
@@ -83,7 +85,8 @@ namespace GoBangXamarin
 
         public void EmptyTile()
         {
-            //if (Tilestatus == TileStatus.Empty) return;
+            if (Tilestatus == TileStatus.Empty) return;
+            Thread.Sleep(10);
             Tilestatus = TileStatus.Empty;
             TileImage.Source = emptyImageSource;
             //Device.BeginInvokeOnMainThread(() =>
@@ -102,7 +105,6 @@ namespace GoBangXamarin
             {
                 Debug.WriteLine($"Tile: ChangeTileStatus  {Tilestatus} to {status}");
                 Tilestatus = status;
-
                 var source = emptyImageSource;
                 switch (status)
                 {
@@ -124,8 +126,11 @@ namespace GoBangXamarin
                         source = gbOImageSource;
                         break;
                 }
-                TileImage.Source = source;
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await ChangeSource(source);
 
+                });
                 //Device.BeginInvokeOnMainThread(() =>
                 //{
                 //TileImage.SetValue(Image.SourceProperty, source);
@@ -138,6 +143,12 @@ namespace GoBangXamarin
             {
                 Debug.WriteLine(StaticClass.LogException("ChangeTileStatus", ex));
             }
+        }
+
+        private async Task ChangeSource(ImageSource source)
+        {
+            TileImage.Source = source;
+             
         }
     }
 }
