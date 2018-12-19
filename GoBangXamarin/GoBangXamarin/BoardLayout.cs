@@ -73,7 +73,7 @@ namespace GoBangXamarin
             lastTile = new Tile();
             Player = ColourEnum.Empty;
             //AddTileChildren();
-            NewGameInitialize();
+            //NewGameInitialize();
             SizeChanged += BoardLayout_SizeChanged;
 
         }
@@ -106,6 +106,7 @@ namespace GoBangXamarin
 
             foreach (Tile tile in tiles)
             {
+                if (tile == null) return;
                 double x = tile.X * tileWidth + (LBorderWidth - TileWidth / 2) * rate;
                 double y = tile.Y * tileHeight + (BorderWidth - TileWidth / 2) * rate;
 
@@ -118,7 +119,29 @@ namespace GoBangXamarin
                 SetLayoutBounds(tile.GbXImage, bounds);
             }
         }
+        private void setBounds()
+        {
+            double min = Math.Min(Width, Height);
+            double rate = min / BoardWidth;
+            double tileWidth = TileWidth * rate;
+            double tileHeight = tileWidth;
+            SetLayoutBounds(imageboard, new Rectangle(0, 0, min, min));
 
+            foreach (Tile tile in tiles)
+            {
+                if (tile == null) return;
+                double x = tile.X * tileWidth + (LBorderWidth - TileWidth / 2) * rate;
+                double y = tile.Y * tileHeight + (BorderWidth - TileWidth / 2) * rate;
+
+                Rectangle bounds = new Rectangle(x, y, tileWidth, tileHeight);
+                //SetLayoutBounds(tile.TileView, bounds);
+                SetLayoutBounds(tile.EmptyImage, bounds);
+                SetLayoutBounds(tile.BlackImage, bounds);
+                SetLayoutBounds(tile.WhiteImage, bounds);
+                SetLayoutBounds(tile.GbOImage, bounds);
+                SetLayoutBounds(tile.GbXImage, bounds);
+            }
+        }
         public void NewGameInitialize()
         {
             IsGameStart = false;
@@ -144,7 +167,10 @@ namespace GoBangXamarin
                     }
                 }
             }
-
+            if (tiles[1, 1].EmptyImage.Width <= 0)
+            {
+                setBounds();
+            }
             IsGameStart = true;
         }
         public void BoardChange(int x, int y, TileStatus status, bool notice)
