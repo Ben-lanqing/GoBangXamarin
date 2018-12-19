@@ -249,7 +249,7 @@ namespace GoBangXamarin
                 PieceInfo pieceInfo = hepler.AIGetNext(board);
                 string str = $"NextPiece:  x:{pieceInfo.X + 1} y:{pieceInfo.Y + 1} ";
 
-                msgLb.Text = str;
+                //msgLb.Text = str;
                 point.X = pieceInfo.X;
                 point.Y = pieceInfo.Y;
             }
