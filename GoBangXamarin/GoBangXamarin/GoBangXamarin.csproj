@@ -16,6 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="BoardLayout - 复制.cs" />
+    <Compile Remove="Tile - 复制.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Image\appbar.back.rest.png" />
     <None Remove="Image\appbar.cancel.rest.png" />
     <None Remove="Image\appbar.check.rest.png" />

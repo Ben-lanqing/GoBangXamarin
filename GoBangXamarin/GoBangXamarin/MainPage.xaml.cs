@@ -83,6 +83,8 @@ namespace GoBangXamarin
                 string[] point = points[j].Split(',');
                 boardLayout.BoardChange(int.Parse(point[0]), int.Parse(point[1]));
             }
+            isGameStart = true;
+
         }
         #region PageEvent
 
@@ -137,17 +139,16 @@ namespace GoBangXamarin
             int count = CurrentBoard.DownPieces.Count();
             if (count > 2)
             {
-                Image image = tile.TileImage;
-                Image imageGB = boardLayout.ImageGB;
-                //imageGB.Opacity = 1;
-                Rectangle bounds = new Rectangle(image.X, image.Y, image.Width, image.Height);
-                AbsoluteLayout.SetLayoutBounds(imageGB, image.Bounds);
+                //Image image = tile.TileImage;
+                //Image imageGB = boardLayout.ImageGB;
+                ////imageGB.Opacity = 1;
+                //Rectangle bounds = new Rectangle(image.X, image.Y, image.Width, image.Height);
+                //AbsoluteLayout.SetLayoutBounds(imageGB, image.Bounds);
 
-                //var lastP1 = CurrentBoard.DownPieces[count - 1];
-                //boardLayout.BoardChange(lastP1.X, lastP1.Y, lastP1.Colour == ColourEnum.Black ? TileStatus.BlackGB : TileStatus.WhiteGB, false);
-                //Thread.Sleep(200);
-                //var lastP2 = CurrentBoard.DownPieces[count - 2];
-                //boardLayout.BoardChange(lastP2.X, lastP2.Y, lastP2.Colour == ColourEnum.Black ? TileStatus.Black : TileStatus.White, false);
+                var lastP1 = CurrentBoard.DownPieces[count - 1];
+                boardLayout.tiles[lastP1.X, lastP1.Y].ChangeTileImageVisible(lastP1.Colour == ColourEnum.Black ? TileStatus.BlackGB : TileStatus.WhiteGB);
+                var lastP2 = CurrentBoard.DownPieces[count - 2];
+                boardLayout.tiles[lastP2.X, lastP2.Y].ChangeTileImageVisible(lastP2.Colour == ColourEnum.Black ? TileStatus.Black : TileStatus.White);
 
             }
         }

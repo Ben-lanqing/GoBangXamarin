@@ -34,7 +34,7 @@
                     <Button x:Name="BackButton" Text=" Back Step " HorizontalOptions="Center" VerticalOptions="Center" Clicked="BackButton_Clicked"
                             BorderColor="Black" BorderWidth="2" BackgroundColor="White" TextColor="Black"  Margin="10"/>
                 </StackLayout>
-                <Label x:Name="msgLb" Text=" " VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />
+                <!--<Label x:Name="msgLb" Text=" " VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />-->
 
 
             </StackLayout>

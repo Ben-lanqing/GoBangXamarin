@@ -13,7 +13,7 @@ namespace GoBangXamarin
         #region public
         public int Y { private set; get; }
         public int X { private set; get; }
-        public Image TileImage { private set; get; }
+        //public Image TileImage { private set; get; }
         public TileStatus Tilestatus { set; get; }
         public event EventHandler SingleTaped;
         #endregion
@@ -21,20 +21,25 @@ namespace GoBangXamarin
         //static ImageSource blackImageSource = ImageSource.FromResource("GoBangXamarin.Image.black.png");
         //static ImageSource whiteImageSource = ImageSource.FromResource("GoBangXamarin.Image.white.png");
         //static ImageSource emptyImageSource = ImageSource.FromResource("GoBangXamarin.Image.empty.png");
-        public static ImageSource blackImageSource = ImageSource.FromResource("GoBangXamarin.Image.X.png");
-        public static ImageSource whiteImageSource = ImageSource.FromResource("GoBangXamarin.Image.O.png");
-        public static ImageSource emptyImageSource = ImageSource.FromResource("GoBangXamarin.Image.empty+.png");
-        public static ImageSource gbImageSource = ImageSource.FromResource("GoBangXamarin.Image.gb.png");
-        public static ImageSource gbOImageSource = ImageSource.FromResource("GoBangXamarin.Image.gbO.png");
-        public static ImageSource gbXImageSource = ImageSource.FromResource("GoBangXamarin.Image.gbX.png");
+        static ImageSource blackImageSource = ImageSource.FromResource("GoBangXamarin.Image.X.png");
+        static ImageSource whiteImageSource = ImageSource.FromResource("GoBangXamarin.Image.O.png");
+        static ImageSource emptyImageSource = ImageSource.FromResource("GoBangXamarin.Image.empty+.png");
+        //public static ImageSource gbImageSource = ImageSource.FromResource("GoBangXamarin.Image.gb.png");
+        static ImageSource gbOImageSource = ImageSource.FromResource("GoBangXamarin.Image.gbO.png");
+        static ImageSource gbXImageSource = ImageSource.FromResource("GoBangXamarin.Image.gbX.png");
+
+        public Image EmptyImage = new Image() { Source = emptyImageSource, IsVisible = true };
+        public Image BlackImage = new Image() { Source = blackImageSource, IsVisible = false };
+        public Image WhiteImage = new Image() { Source = whiteImageSource, IsVisible = false };
+        public Image GbOImage = new Image() { Source = gbOImageSource, IsVisible = false };
+        public Image GbXImage = new Image() { Source = gbXImageSource, IsVisible = false };
 
         public Tile(int row = 0, int col = 0)
         {
             Y = row;
             X = col;
-            TileImage = new Image();
-            TileImage.Source = emptyImageSource;
-            //TileImage.SetValue(Image.SourceProperty, emptyImageSource);
+            //TileImage = new Image();
+            //TileImage.Source = emptyImageSource;
             Tilestatus = TileStatus.Empty;
 
             TapGestureRecognizer singleTap = new TapGestureRecognizer
@@ -42,53 +47,20 @@ namespace GoBangXamarin
                 NumberOfTapsRequired = 1
             };
             singleTap.Tapped += OnSingleTap;
-            TileImage.GestureRecognizers.Add(singleTap);
-            //TileImage.PropertyChanged += TileImage_PropertyChanged;
+            EmptyImage.GestureRecognizers.Add(singleTap);
+            BlackImage.GestureRecognizers.Add(singleTap);
+            WhiteImage.GestureRecognizers.Add(singleTap);
+            GbOImage.GestureRecognizers.Add(singleTap);
+            GbXImage.GestureRecognizers.Add(singleTap);
         }
 
-        private void TileImage_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            //if (e.PropertyName == "Source")
-            //{
-            //    if (Tilestatus == TileStatus.Black)
-            //    {
-            //        if (TileImage.Source.Id != blackImageSource.Id)
-            //        {
-            //            Device.BeginInvokeOnMainThread(() =>
-            //            {
-            //                TileImage.SetValue(Image.SourceProperty, blackImageSource);
-            //            });
-            //            Debug.WriteLine($"MainPage: checkTileSource [{X},{Y}] Tilestatus:{Tilestatus }");
-            //        }
-            //    }
-            //    if (Tilestatus == TileStatus.White)
-            //    {
-            //        if (TileImage.Source.Id != whiteImageSource.Id)
-            //        {
-            //            Device.BeginInvokeOnMainThread(() =>
-            //            {
-            //                TileImage.SetValue(Image.SourceProperty, whiteImageSource);
-            //            });
-
-            //            Debug.WriteLine($"MainPage: checkTileSource [{X},{Y}] Tilestatus:{Tilestatus }");
-
-            //        }
-            //    }
-
-            //}
-            if (e.PropertyName == "Tilestatus")
-            {
-                Debug.WriteLine($"TileImage_PropertyChanged: Tilestatus  {((Tile)sender).Tilestatus}");
-
-            }
-        }
 
         public void EmptyTile()
         {
-            if (Tilestatus == TileStatus.Empty) return;
-            Thread.Sleep(10);
+            //if (Tilestatus == TileStatus.Empty) return;
             Tilestatus = TileStatus.Empty;
-            TileImage.Source = emptyImageSource;
+            ChangeTileImageVisible(TileStatus.Empty);
+            //TileImage.Source = emptyImageSource;
             //Device.BeginInvokeOnMainThread(() =>
             //{
             //    TileImage.SetValue(Image.SourceProperty, emptyImageSource);
@@ -105,39 +77,40 @@ namespace GoBangXamarin
             {
                 Debug.WriteLine($"Tile: ChangeTileStatus  {Tilestatus} to {status}");
                 Tilestatus = status;
-                var source = emptyImageSource;
-                switch (status)
-                {
-                    case TileStatus.Empty:
-                        source = emptyImageSource;
-                        break;
+                //var source = emptyImageSource;
+                ChangeTileImageVisible(status);
+                //switch (status)
+                //{
+                //    case TileStatus.Empty:
+                //        //source = emptyImageSource;
+                //        break;
 
-                    case TileStatus.Black:
-                        source = blackImageSource;
-                        break;
+                //    case TileStatus.Black:
+                //        //source = blackImageSource;
+                //        break;
 
-                    case TileStatus.White:
-                        source = whiteImageSource;
-                        break;
-                    case TileStatus.BlackGB:
-                        source = gbXImageSource;
-                        break;
-                    case TileStatus.WhiteGB:
-                        source = gbOImageSource;
-                        break;
-                }
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    await ChangeSource(source);
+                //    case TileStatus.White:
+                //        //source = whiteImageSource;
+                //        break;
+                //    case TileStatus.BlackGB:
+                //        //source = gbXImageSource;
+                //        break;
+                //    case TileStatus.WhiteGB:
+                //        //source = gbOImageSource;
+                //        break;
+                //}
+                //Device.BeginInvokeOnMainThread(async () =>
+                //{
+                //    await ChangeSource(source);
 
-                });
+                //});
                 //Device.BeginInvokeOnMainThread(() =>
                 //{
                 //TileImage.SetValue(Image.SourceProperty, source);
                 //Debug.WriteLine($"Tile: empty {emptyImageSource.Id} black {blackImageSource.Id} white {whiteImageSource.Id}");
 
                 //});
-                Debug.WriteLine($"Tile: ChangeTileStatus  [{X},{Y}] ButtonStatus:{status }  TileImage  {source.Id}");
+                //Debug.WriteLine($"Tile: ChangeTileStatus  [{X},{Y}] ButtonStatus:{status }  TileImage  {source.Id}");
             }
             catch (Exception ex)
             {
@@ -145,11 +118,57 @@ namespace GoBangXamarin
             }
         }
 
-        private async Task ChangeSource(ImageSource source)
+        //private async Task ChangeSource(ImageSource source)
+        //{
+        //    TileImage.Source = source;
+
+        //}
+        public void ChangeTileImageVisible(TileStatus status)
         {
-            TileImage.Source = source;
-             
+            switch (status)
+            {
+                case TileStatus.Empty:
+                    EmptyImage.IsVisible = true;
+                    BlackImage.IsVisible = false;
+                    WhiteImage.IsVisible = false;
+                    GbOImage.IsVisible = false;
+                    GbXImage.IsVisible = false;
+                    break;
+
+                case TileStatus.Black:
+                    EmptyImage.IsVisible = false;
+                    BlackImage.IsVisible = true;
+                    WhiteImage.IsVisible = false;
+                    GbOImage.IsVisible = false;
+                    GbXImage.IsVisible = false;
+                    break;
+
+                case TileStatus.White:
+                    EmptyImage.IsVisible = false;
+                    BlackImage.IsVisible = false;
+                    WhiteImage.IsVisible = true;
+                    GbOImage.IsVisible = false;
+                    GbXImage.IsVisible = false;
+                    break;
+                case TileStatus.BlackGB:
+                    EmptyImage.IsVisible = false;
+                    BlackImage.IsVisible = false;
+                    WhiteImage.IsVisible = false;
+                    GbXImage.IsVisible = true;
+                    GbOImage.IsVisible = false;
+                    break;
+                case TileStatus.WhiteGB:
+                    EmptyImage.IsVisible = false;
+                    BlackImage.IsVisible = false;
+                    WhiteImage.IsVisible = false;
+                    GbXImage.IsVisible = false;
+                    GbOImage.IsVisible = true;
+                    break;
+            }
+
+
         }
+
     }
 }
 public enum TileStatus

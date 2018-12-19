@@ -63,39 +63,33 @@ namespace GoBangXamarin
 
         public BoardLayout()
         {
-            //ImageGB.Source = ImageSource.FromResource("GoBangXamarin.Image.black.png");
-            //ImageGB.Opacity = 0;
-            //Children.Add(ImageGB);
+            ImageGB.Source = ImageSource.FromResource("GoBangXamarin.Image.black.png");
+            ImageGB.Opacity = 0;
+            Children.Add(ImageGB);
 
             //imageboard.Source = ImageSource.FromResource("GoBangXamarin.Image.board.jpg");
             //Children.Add(imageboard);           
             IsGameStart = false;
             lastTile = new Tile();
             Player = ColourEnum.Empty;
-            //AddTileChildren();
-            NewGameInitialize();
-            SizeChanged += BoardLayout_SizeChanged;
-
+            AddTileChildren();
+            //NewGameInitialize();
         }
-        //private void AddTileChildren()
-        //{
-        //    for (int row = 0; row < ROWS; row++)
-        //    {
-        //        for (int col = 0; col < COLS; col++)
-        //        {
-        //            Thread.Sleep(10);
-        //            Tile tile = new Tile(row, col);
-        //            tile.SingleTaped += Tile_SingleTaped; ;
-        //            Children.Add(tile.EmptyImage);
-        //            Children.Add(tile.BlackImage);
-        //            Children.Add(tile.WhiteImage);
-        //            Children.Add(tile.GbOImage);
-        //            Children.Add(tile.GbXImage);
-        //            tiles[col, row] = tile;
-        //        }
-        //    }
-        //    SizeChanged += BoardLayout_SizeChanged;
-        //}
+        private void AddTileChildren()
+        {
+            for (int row = 0; row < ROWS; row++)
+            {
+                for (int col = 0; col < COLS; col++)
+                {
+                    Thread.Sleep(10);
+                    Tile tile = new Tile(row, col);
+                    tile.SingleTaped += Tile_SingleTaped; ;
+                    Children.Add(tile.TileImage);
+                    tiles[col, row] = tile;
+                }
+            }
+            SizeChanged += BoardLayout_SizeChanged;
+        }
         private void BoardLayout_SizeChanged(object sender, EventArgs e)
         {
             double min = Math.Min(Width, Height);
@@ -111,11 +105,7 @@ namespace GoBangXamarin
 
                 Rectangle bounds = new Rectangle(x, y, tileWidth, tileHeight);
                 //SetLayoutBounds(tile.TileView, bounds);
-                SetLayoutBounds(tile.EmptyImage, bounds);
-                SetLayoutBounds(tile.BlackImage, bounds);
-                SetLayoutBounds(tile.WhiteImage, bounds);
-                SetLayoutBounds(tile.GbOImage, bounds);
-                SetLayoutBounds(tile.GbXImage, bounds);
+                SetLayoutBounds(tile.TileImage, bounds);
             }
         }
 
@@ -128,14 +118,10 @@ namespace GoBangXamarin
                 {
                     if (tiles[col, row] == null)
                     {
-                        //Thread.Sleep(10);
+                        Thread.Sleep(10);
                         Tile tile = new Tile(row, col);
                         tile.SingleTaped += Tile_SingleTaped; ;
-                        Children.Add(tile.EmptyImage);
-                        Children.Add(tile.BlackImage);
-                        Children.Add(tile.WhiteImage);
-                        Children.Add(tile.GbOImage);
-                        Children.Add(tile.GbXImage);
+                        Children.Add(tile.TileImage);
                         tiles[col, row] = tile;
                     }
                     else
