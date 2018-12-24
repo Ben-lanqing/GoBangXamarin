@@ -198,6 +198,7 @@ namespace GoBangCL.Standard
             List<PieceInfo> NewLTCrossPoint = new List<PieceInfo>();
             foreach (PieceInfo d in LTCrossPoint)
             {
+                if (d == null) continue;
                 int i = d.X;
                 int j = d.Y;
                 int mini = i - 4, maxi = i + 4;

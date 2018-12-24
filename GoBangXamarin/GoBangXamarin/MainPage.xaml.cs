@@ -51,12 +51,18 @@ namespace GoBangXamarin
             {
                 Debug.WriteLine($"MainPage Start PrepareForNewGame~~~~~~~~~~~~~~");
                 Application.Current.Properties["CurrentStep"] = 0;
-                CurrentBoard = new Board();
-                BoardList.Clear();
                 isGameInProgress = false;
                 isGameStart = false;
-                boardLayout.NewGameInitialize();
-
+                //boardLayout.NewGameInitialize();
+                int step = CurrentBoard.Step;
+                for (int i = 0; i < step; i++)
+                {
+                    int lenght = boardLayout.Children.Count;
+                    boardLayout.Children.RemoveAt(lenght - 1);
+                }
+                boardLayout.DownTiles.Clear();
+                CurrentBoard = new Board();
+                BoardList.Clear();
                 timeLabel.Text = new TimeSpan(0).ToString(ConstClass.TimeFormat);
                 msgLb.Text = "";
                 msgLb.TextColor = Color.Black;
@@ -70,6 +76,8 @@ namespace GoBangXamarin
 
         private void NewGameStart()
         {
+            isGameStart = true;
+            boardLayout.IsGameStart = true;
             string[] games = ConstClass.GameStr.Split(';');
             int count = games.Length;
             Random rd = new Random();
@@ -79,12 +87,9 @@ namespace GoBangXamarin
             int length = points.Length;
             for (int j = 0; j < length; j++)
             {
-
                 string[] point = points[j].Split(',');
                 boardLayout.BoardChange(int.Parse(point[0]), int.Parse(point[1]));
             }
-            isGameStart = true;
-
         }
         #region PageEvent
 
@@ -118,10 +123,12 @@ namespace GoBangXamarin
                         msgLb.TextColor = Color.Red;
                         return;
                     }
-
-                    Device.BeginInvokeOnMainThread(() =>
+                    Task.Run(() =>
                     {
-                        DoAI();
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            DoAI();
+                        });
                     });
                 }
                 else
@@ -136,21 +143,36 @@ namespace GoBangXamarin
         }
         private void ChangeLastImage(Tile tile)
         {
-            int count = CurrentBoard.DownPieces.Count();
-            if (count > 2)
-            {
-                //Image image = tile.TileImage;
-                //Image imageGB = boardLayout.ImageGB;
-                ////imageGB.Opacity = 1;
-                //Rectangle bounds = new Rectangle(image.X, image.Y, image.Width, image.Height);
-                //AbsoluteLayout.SetLayoutBounds(imageGB, image.Bounds);
 
-                var lastP1 = CurrentBoard.DownPieces[count - 1];
-                boardLayout.tiles[lastP1.X, lastP1.Y].ChangeTileImageVisible(lastP1.Colour == ColourEnum.Black ? TileStatus.BlackGB : TileStatus.WhiteGB);
-                var lastP2 = CurrentBoard.DownPieces[count - 2];
-                boardLayout.tiles[lastP2.X, lastP2.Y].ChangeTileImageVisible(lastP2.Colour == ColourEnum.Black ? TileStatus.Black : TileStatus.White);
+            // Task.Run(() =>
+            //{
+            //    Device.BeginInvokeOnMainThread(async () =>
+            //    {
+            //         boardLayout.SetGB(tile.X, tile.Y);
+            //    });
+            //});
 
-            }
+            //int count = CurrentBoard.DownPieces.Count();
+            //if (count > 2)
+            //{
+            //    //var lastP1 = CurrentBoard.DownPieces[count - 1];
+            //    //boardLayout.tiles[lastP1.X, lastP1.Y].ChangeTileImageVisible(lastP1.Colour == ColourEnum.Black ? TileStatus.BlackGB : TileStatus.WhiteGB);
+            //    //var lastP2 = CurrentBoard.DownPieces[count - 2];
+            //    //boardLayout.tiles[lastP2.X, lastP2.Y].ChangeTileImageVisible(lastP2.Colour == ColourEnum.Black ? TileStatus.Black : TileStatus.White);
+            //    var GBLast = boardLayout.Children.Last();
+            //    var tileLast = boardLayout.DownTiles.Last();
+
+            //    if (GBLast.Id != tileLast.TileImage.Id)
+            //    {
+            //        boardLayout.Children.Remove(GBLast);
+            //    }
+            //    Tile tileDown = new Tile(tileLast.X, tileLast.Y, tileLast.Tilestatus == TileStatus.Black ? TileStatus.BlackGB : TileStatus.WhiteGB);
+            //    boardLayout.Children.Add(tileDown.TileImage);
+            //    Rectangle bounds = new Rectangle(tileLast.TileImage.X, tileLast.TileImage.Y, tileLast.TileImage.Width, tileLast.TileImage.Height);
+            //    AbsoluteLayout.SetLayoutBounds(tileDown.TileImage, bounds);
+
+
+            //}
         }
 
         private void NewGameButton_Clicked(object sender, EventArgs e)

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,9 +23,8 @@ namespace GoBangXamarin
         Tile lastTile;
         Image imageboard = new Image();
         public Image ImageGB = new Image();
-        //static ImageSource blackImageSource = ImageSource.FromResource("GoBangXamarin.Image.X.png");
+        ImageSource gbImageSource = ImageSource.FromResource("GoBangXamarin.Image.gb.png");
         //static ImageSource whiteImageSource = ImageSource.FromResource("GoBangXamarin.Image.O.png");
-
         #endregion
 
         #region public
@@ -59,11 +59,12 @@ namespace GoBangXamarin
                     return TileStatus.White;
             }
         }
+        public List<Tile> DownTiles = new List<Tile>();
         #endregion
 
         public BoardLayout()
         {
-            //ImageGB.Source = ImageSource.FromResource("GoBangXamarin.Image.black.png");
+            ImageGB.Source = gbImageSource;
             //ImageGB.Opacity = 0;
             //Children.Add(ImageGB);
 
@@ -73,9 +74,9 @@ namespace GoBangXamarin
             lastTile = new Tile();
             Player = ColourEnum.Empty;
             //AddTileChildren();
-            //NewGameInitialize();
+            NewGameInitialize();
             SizeChanged += BoardLayout_SizeChanged;
-
+            IsGameStart = true;
         }
         //private void AddTileChildren()
         //{
@@ -111,67 +112,84 @@ namespace GoBangXamarin
                 double y = tile.Y * tileHeight + (BorderWidth - TileWidth / 2) * rate;
 
                 Rectangle bounds = new Rectangle(x, y, tileWidth, tileHeight);
-                //SetLayoutBounds(tile.TileView, bounds);
-                SetLayoutBounds(tile.EmptyImage, bounds);
-                SetLayoutBounds(tile.BlackImage, bounds);
-                SetLayoutBounds(tile.WhiteImage, bounds);
-                SetLayoutBounds(tile.GbOImage, bounds);
-                SetLayoutBounds(tile.GbXImage, bounds);
+                SetLayoutBounds(tile.TileImage, bounds);
+                //SetLayoutBounds(tile.EmptyImage, bounds);
+                //SetLayoutBounds(tile.BlackImage, bounds);
+                //SetLayoutBounds(tile.WhiteImage, bounds);
+                //SetLayoutBounds(tile.GbOImage, bounds);
+                //SetLayoutBounds(tile.GbXImage, bounds);
             }
-        }
-        private void setBounds()
-        {
-            double min = Math.Min(Width, Height);
-            double rate = min / BoardWidth;
-            double tileWidth = TileWidth * rate;
-            double tileHeight = tileWidth;
-            SetLayoutBounds(imageboard, new Rectangle(0, 0, min, min));
-
-            foreach (Tile tile in tiles)
+            foreach (Tile tile in DownTiles)
             {
                 if (tile == null) return;
                 double x = tile.X * tileWidth + (LBorderWidth - TileWidth / 2) * rate;
                 double y = tile.Y * tileHeight + (BorderWidth - TileWidth / 2) * rate;
 
                 Rectangle bounds = new Rectangle(x, y, tileWidth, tileHeight);
-                //SetLayoutBounds(tile.TileView, bounds);
-                SetLayoutBounds(tile.EmptyImage, bounds);
-                SetLayoutBounds(tile.BlackImage, bounds);
-                SetLayoutBounds(tile.WhiteImage, bounds);
-                SetLayoutBounds(tile.GbOImage, bounds);
-                SetLayoutBounds(tile.GbXImage, bounds);
+                SetLayoutBounds(tile.TileImage, bounds);
+                //SetLayoutBounds(tile.EmptyImage, bounds);
+                //SetLayoutBounds(tile.BlackImage, bounds);
+                //SetLayoutBounds(tile.WhiteImage, bounds);
+                //SetLayoutBounds(tile.GbOImage, bounds);
+                //SetLayoutBounds(tile.GbXImage, bounds);
             }
+
         }
+        //private void setBounds()
+        //{
+        //    double min = Math.Min(Width, Height);
+        //    double rate = min / BoardWidth;
+        //    double tileWidth = TileWidth * rate;
+        //    double tileHeight = tileWidth;
+        //    SetLayoutBounds(imageboard, new Rectangle(0, 0, min, min));
+
+        //    foreach (Tile tile in tiles)
+        //    {
+        //        if (tile == null) return;
+        //        double x = tile.X * tileWidth + (LBorderWidth - TileWidth / 2) * rate;
+        //        double y = tile.Y * tileHeight + (BorderWidth - TileWidth / 2) * rate;
+
+        //        Rectangle bounds = new Rectangle(x, y, tileWidth, tileHeight);
+        //        SetLayoutBounds(tile.TileImage, bounds);
+        //        //SetLayoutBounds(tile.EmptyImage, bounds);
+        //        //SetLayoutBounds(tile.BlackImage, bounds);
+        //        //SetLayoutBounds(tile.WhiteImage, bounds);
+        //        //SetLayoutBounds(tile.GbOImage, bounds);
+        //        //SetLayoutBounds(tile.GbXImage, bounds);
+        //    }
+        //}
         public void NewGameInitialize()
         {
-            IsGameStart = false;
+            //IsGameStart = false;
             for (int row = 0; row < ROWS; row++)
             {
                 for (int col = 0; col < COLS; col++)
                 {
                     if (tiles[col, row] == null)
                     {
-                        //Thread.Sleep(10);
+                        Thread.Sleep(1);
                         Tile tile = new Tile(row, col);
-                        tile.SingleTaped += Tile_SingleTaped; ;
-                        Children.Add(tile.EmptyImage);
-                        Children.Add(tile.BlackImage);
-                        Children.Add(tile.WhiteImage);
-                        Children.Add(tile.GbOImage);
-                        Children.Add(tile.GbXImage);
+                        tile.SingleTaped += Tile_SingleTaped;
+                        Children.Add(tile.TileImage);
+
+                        //Children.Add(tile.EmptyImage);
+                        //Children.Add(tile.BlackImage);
+                        //Children.Add(tile.WhiteImage);
+                        //Children.Add(tile.GbOImage);
+                        //Children.Add(tile.GbXImage);
                         tiles[col, row] = tile;
                     }
                     else
                     {
-                        tiles[col, row].EmptyTile();
+                        //tiles[col, row].EmptyTile();
                     }
                 }
             }
-            if (tiles[1, 1].EmptyImage.Width <= 0)
-            {
-                setBounds();
-            }
-            IsGameStart = true;
+            //if (tiles[1, 1].EmptyImage.Width <= 0)
+            //{
+            //    setBounds();
+            //}
+            //IsGameStart = true;
         }
         public void BoardChange(int x, int y, TileStatus status, bool notice)
         {
@@ -205,11 +223,32 @@ namespace GoBangXamarin
 
         }
 
+        public async Task SetGB(int x, int y)
+        {
+            var gbs = DownTiles.Where(a => a.Tilestatus == TileStatus.BlackGB || a.Tilestatus == TileStatus.WhiteGB);
+            foreach (var gb in gbs)
+            {
+                gb.SetTileImage(gb.Tilestatus == TileStatus.BlackGB ? TileStatus.Black : TileStatus.White);
+            }
+            Tile last = DownTiles.FirstOrDefault(a => a.X == x && a.Y == y);
+            if (last != null)
+            {
+                Thread.Sleep(50);
+                last.SetTileImage(last.Tilestatus == TileStatus.Black ? TileStatus.BlackGB : TileStatus.WhiteGB);
+            }
+        }
+
         private void doBoardChange(Tile tile, TileStatus status, bool notice = true)
         {
             if (IsGameStart)
             {
-                tile.ChangeTileStatus(status);
+                Tile tileDown = new Tile(tile.X, tile.Y, status);
+                Children.Add(tileDown.TileImage);
+                DownTiles.Add(tileDown);
+                Rectangle bounds = new Rectangle(tile.TileImage.X, tile.TileImage.Y, tile.TileImage.Width, tile.TileImage.Height);
+                SetLayoutBounds(tileDown.TileImage, bounds);
+
+                //tile.ChangeTileStatus(status);
                 if (notice)
                 {
                     LastTile = tile;
